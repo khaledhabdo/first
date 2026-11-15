@@ -1,0 +1,3212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ManualOps Radar — Phase 1 Real Data Validation Report</title>
+    <style>
+        :root {
+            --bg: #f8fafc;
+            --card: #ffffff;
+            --text: #0f172a;
+            --muted: #475569;
+            --border: #e2e8f0;
+            --accent: #2563eb;
+            --ok-bg: #dcfce7;
+            --ok-text: #166534;
+            --warn-bg: #fef3c7;
+            --warn-text: #92400e;
+            --rej-bg: #fee2e2;
+            --rej-text: #991b1b;
+            --cat-bg: #e0e7ff;
+            --cat-text: #1e40af;
+        }
+        * { box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 24px;
+            line-height: 1.5;
+        }
+        .container { max-width: 1380px; margin: 0 auto; }
+        header {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 24px;
+            margin-bottom: 20px;
+        }
+        h1 { margin: 0 0 8px 0; font-size: 1.65rem; }
+        h2 { margin-top: 0; font-size: 1.25rem; border-bottom: 1px solid var(--border); padding-bottom: 8px; }
+        .banner-warning {
+            background: var(--warn-bg);
+            color: var(--warn-text);
+            border-left: 5px solid #d97706;
+            padding: 14px 16px;
+            border-radius: 6px;
+            margin-top: 14px;
+            font-size: 0.95rem;
+        }
+        .grid-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+            gap: 14px;
+            margin-bottom: 20px;
+        }
+        .card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 18px;
+        }
+        .metric-value { font-size: 1.8rem; font-weight: 700; margin: 4px 0; }
+        .metric-label { font-size: 0.85rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.04em; }
+        .section {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            overflow-x: auto;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.88rem;
+        }
+        th, td {
+            border-bottom: 1px solid var(--border);
+            padding: 10px 12px;
+            text-align: left;
+            vertical-align: top;
+        }
+        th { background: #f1f5f9; font-weight: 600; }
+        .badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin: 2px 0;
+        }
+        .badge-ok { background: var(--ok-bg); color: var(--ok-text); }
+        .badge-err { background: var(--rej-bg); color: var(--rej-text); }
+        .badge-cat { background: var(--cat-bg); color: var(--cat-text); }
+        .badge-manual { background: var(--ok-bg); color: var(--ok-text); }
+        .badge-auto { background: var(--warn-bg); color: var(--warn-text); }
+        .badge-dup { background: #f1f5f9; color: #475569; border: 1px solid #cbd5e1; }
+        .badge-rej { background: var(--rej-bg); color: var(--rej-text); }
+        .muted { color: var(--muted); font-size: 0.8rem; }
+        .evidence-cell { max-width: 420px; font-style: italic; color: #1e293b; }
+        .intent-cell { max-width: 300px; font-size: 0.82rem; color: #78350f; }
+        .date-cell { white-space: nowrap; font-size: 0.8rem; color: var(--muted); }
+        .controls { margin-bottom: 12px; display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+        select { padding: 6px 10px; border-radius: 6px; border: 1px solid var(--border); font-size: 0.88rem; }
+        a { color: var(--accent); text-decoration: none; font-weight: 500; }
+        a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <header>
+        <h1>ManualOps Radar — Phase 1: Real Data Validation Report</h1>
+        <div class="muted">
+            Generated at: <strong>2026-11-15T04:25:12Z</strong> |
+            Source: Official Greenhouse Public Job Board API (5 Verified Companies)
+        </div>
+        <div class="banner-warning">
+            <strong>Critical Product Rule (Job Posting &ne; Buying Intent):</strong>
+            Explicit mentions of manual spreadsheets, reconciliations, reporting, data entry, or CRM maintenance prove
+            <em>workflow existence</em>, never software buying intent. In fact, real data below shows companies either
+            (a) allocate headcount budget to execute the manual process or (b) hire internal staff to automate it in-house.
+        </div>
+    </header>
+
+    <div class="grid-cards">
+        <div class="card">
+            <div class="metric-label">Verified Boards Scanned</div>
+            <div class="metric-value">5 / 5</div>
+            <div class="muted">API Errors: 0 (Measured)</div>
+        </div>
+        <div class="card">
+            <div class="metric-label">Total Jobs Scanned</div>
+            <div class="metric-value">1,974</div>
+            <div class="muted">100% live public postings (Measured)</div>
+        </div>
+        <div class="card">
+            <div class="metric-label">Candidate Matches Evaluated</div>
+            <div class="metric-value">864</div>
+            <div class="muted">Broad keyword hits across 5 categories</div>
+        </div>
+        <div class="card">
+            <div class="metric-label">Valid Workflow Signals</div>
+            <div class="metric-value" style="color: #166534;">61</div>
+            <div class="muted">51 unique (10 regional duplicates)</div>
+        </div>
+        <div class="card">
+            <div class="metric-label">Rejected False Positives</div>
+            <div class="metric-value" style="color: #991b1b;">803</div>
+            <div class="muted">92.9% of raw keyword matches rejected</div>
+        </div>
+        <div class="card">
+            <div class="metric-label">Phase 1 Recommendation</div>
+            <div class="metric-value" style="color: #b45309;">IMPROVE</div>
+            <div class="muted">Refine target persona &amp; filters before Phase 2</div>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>1. Board-by-Board Validation Summary (Measured Figures)</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Company (Verified Token)</th>
+                    <th>API Status</th>
+                    <th>Jobs Scanned</th>
+                    <th>Candidate Sentences</th>
+                    <th>Valid Workflow Signals</th>
+                    <th>Rejected False Positives</th>
+                </tr>
+            </thead>
+            <tbody>
+                
+            <tr>
+                <td><strong>Stripe</strong> <code>(stripe)</code></td>
+                <td><span class="badge badge-ok">HTTP 200</span></td>
+                <td>785</td>
+                <td>306</td>
+                <td><strong>25</strong> <span class="muted">(24 unique)</span></td>
+                <td>281</td>
+            </tr>
+            
+            <tr>
+                <td><strong>Cloudflare</strong> <code>(cloudflare)</code></td>
+                <td><span class="badge badge-ok">HTTP 200</span></td>
+                <td>479</td>
+                <td>303</td>
+                <td><strong>7</strong> <span class="muted">(7 unique)</span></td>
+                <td>296</td>
+            </tr>
+            
+            <tr>
+                <td><strong>GitLab</strong> <code>(gitlab)</code></td>
+                <td><span class="badge badge-ok">HTTP 200</span></td>
+                <td>251</td>
+                <td>137</td>
+                <td><strong>14</strong> <span class="muted">(6 unique)</span></td>
+                <td>123</td>
+            </tr>
+            
+            <tr>
+                <td><strong>Datadog</strong> <code>(datadog)</code></td>
+                <td><span class="badge badge-ok">HTTP 200</span></td>
+                <td>384</td>
+                <td>70</td>
+                <td><strong>9</strong> <span class="muted">(8 unique)</span></td>
+                <td>61</td>
+            </tr>
+            
+            <tr>
+                <td><strong>Gusto</strong> <code>(gusto)</code></td>
+                <td><span class="badge badge-ok">HTTP 200</span></td>
+                <td>75</td>
+                <td>48</td>
+                <td><strong>6</strong> <span class="muted">(6 unique)</span></td>
+                <td>42</td>
+            </tr>
+            
+            </tbody>
+        </table>
+    </div>
+
+    <div class="section">
+        <h2>2. Signal Breakdown: Skills vs. Manual Work vs. Buying Intent</h2>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px;">
+            <div>
+                <h3>Valid Signals by Workflow Category (61 total)</h3>
+                <ul><li><strong>Reconciliation</strong>: 28 valid signals</li><li><strong>CRM Operations</strong>: 24 valid signals</li><li><strong>Reporting</strong>: 4 valid signals</li><li><strong>Data Entry</strong>: 3 valid signals</li><li><strong>Spreadsheets</strong>: 2 valid signals</li></ul>
+                <p class="muted">
+                    <strong>Direct Manual Execution:</strong> 52 signals<br/>
+                    <strong>Internal Automation Mandate:</strong> 9 signals
+                </p>
+            </div>
+            <div>
+                <h3>Rejected False Positives by Automated Rule (803 total)</h3>
+                <ul><li><code>GENERIC_MENTION_WITHOUT_MANUAL_WORKFLOW</code>: <strong>331</strong> rejected statements</li><li><code>GENERAL_SOFTWARE_SKILL</code>: <strong>244</strong> rejected statements</li><li><code>VERB_EXCEL_OR_IDIOM</code>: <strong>159</strong> rejected statements</li><li><code>ENGINEERING_INFRA_OR_SYSTEMS_BUILD</code>: <strong>56</strong> rejected statements</li><li><code>PRODUCT_PITCH_OR_CUSTOMER_FEATURE</code>: <strong>13</strong> rejected statements</li></ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>3. All Validated Manual Workflow Signals (61 Real Matches)</h2>
+        <div class="controls">
+            <label for="catFilter"><strong>Filter by Category:</strong></label>
+            <select id="catFilter" onchange="filterValidSignals()">
+                <option value="ALL">All Categories</option>
+                <option value="Reconciliation">Reconciliation</option>
+                <option value="CRM Operations">CRM Operations</option>
+                <option value="Reporting">Reporting</option>
+                <option value="Data Entry">Data Entry</option>
+                <option value="Spreadsheets">Spreadsheets</option>
+            </select>
+            <label for="subFilter"><strong>Filter by Subtype:</strong></label>
+            <select id="subFilter" onchange="filterValidSignals()">
+                <option value="ALL">All Subtypes</option>
+                <option value="DIRECT_MANUAL_EXECUTION">Direct Manual Execution</option>
+                <option value="INTERNAL_AUTOMATION_MANDATE">Internal Automation Mandate</option>
+            </select>
+        </div>
+        <table id="validTable">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Company &amp; Dept</th>
+                    <th>Posting Title &amp; Original URL</th>
+                    <th>Category &amp; Subtype</th>
+                    <th>Exact Verbatim Evidence</th>
+                    <th>Publication / Update Dates</th>
+                    <th>Buying Intent &amp; Uncertainty Assessment</th>
+                </tr>
+            </thead>
+            <tbody>
+                
+            <tr data-category="Spreadsheets" data-subtype="INTERNAL_AUTOMATION_MANDATE">
+                <td>1</td>
+                <td>
+                    <strong>Stripe</strong><br/>
+                    <span class="muted">1520 Sales Operations (SS&amp;O)</span>
+                </td>
+                <td>
+                    <a href="https://stripe.com/jobs/search?gh_jid=8354566" target="_blank" rel="noopener noreferrer">
+                        AMER Data Analyst - Sales Strategy and Operations
+                    </a><br/>
+                    <span class="muted">Chicago, US Remote, SF, NYC, Seattle</span>
+                </td>
+                <td>
+                    <span class="badge badge-cat">Spreadsheets</span><br/>
+                    <span class="badge badge-auto">Internal Automation Mandate</span>
+                </td>
+                <td class="evidence-cell">"Scalable Insight: Conceptualize, build, manage and maintain centralized tools (including spreadsheet models, dashboards) that the business and Sales Strategy &amp; Operations team can use to extract data / insights for daily business management in an automated manner to drive current and future rhythms of business."</td>
+                <td class="date-cell">
+                    <div><strong>Published:</strong> 2026-11-05</div>
+                    <div><strong>Updated:</strong> 2026-11-05</div>
+                </td>
+                <td class="intent-cell">
+                    <div class="intent-warning">NO DIRECT BUYING INTENT: While this confirms internal process pain, the company is actively hiring internal talent (and referencing internal AI/ERP tooling) to automate this workflow in-house.</div>
+                </td>
+            </tr>
+            
+            <tr data-category="Reconciliation" data-subtype="DIRECT_MANUAL_EXECUTION">
+                <td>2</td>
+                <td>
+                    <strong>Stripe</strong><br/>
+                    <span class="muted">4202 BFin - FinOps (SDC)</span>
+                </td>
+                <td>
+                    <a href="https://stripe.com/jobs/search?gh_jid=8262032" target="_blank" rel="noopener noreferrer">
+                        Bridge Product Accountant
+                    </a><br/>
+                    <span class="muted">Bengaluru</span>
+                </td>
+                <td>
+                    <span class="badge badge-cat">Reconciliation</span><br/>
+                    <span class="badge badge-manual">Direct Manual Execution</span>
+                </td>
+                <td class="evidence-cell">"Plan and perform monthly close activities, including journal entries, reconciliations, analytic reviews, and financial reporting deliverables for Bridge products"</td>
+                <td class="date-cell">
+                    <div><strong>Published:</strong> 2026-10-09</div>
+                    <div><strong>Updated:</strong> 2026-10-29</div>
+                </td>
+                <td class="intent-cell">
+                    <div class="intent-warning">NO DIRECT BUYING INTENT: Hiring a human operator/analyst to execute this recurring process indicates the team currently addresses the workload via headcount rather than external software procurement.</div>
+                </td>
+            </tr>
+            
+            <tr data-category="CRM Operations" data-subtype="DIRECT_MANUAL_EXECUTION">
+                <td>3</td>
+                <td>
+                    <strong>Stripe</strong><br/>
+                    <span class="muted">1630 Alliances &amp; Channels</span>
+                </td>
+                <td>
+                    <a href="https://stripe.com/jobs/search?gh_jid=8195584" target="_blank" rel="noopener noreferrer">
+                        Channel Sales Executive
+                    </a><br/>
+                    <span class="muted">Dublin</span>
+                </td>
+                <td>
+                    <span class="badge badge-cat">CRM Operations</span><br/>
+                    <span class="badge badge-manual">Direct Manual Execution</span>
+                </td>
+                <td class="evidence-cell">"Maintain accurate sales and partner activities in Salesforce."</td>
+                <td class="date-cell">
+                    <div><strong>Published:</strong> 2026-09-11</div>
+                    <div><strong>Updated:</strong> 2026-10-29</div>
+                </td>
+                <td class="intent-cell">
+                    <div class="intent-warning">NO DIRECT BUYING INTENT: Hiring a human operator/analyst to execute this recurring process indicates the team currently addresses the workload via headcount rather than external software procurement.</div>
+                </td>
+            </tr>
+            
+            <tr data-category="CRM Operations" data-subtype="DIRECT_MANUAL_EXECUTION">
+                <td>4</td>
+                <td>
+                    <strong>Stripe</strong><br/>
+                    <span class="muted">1630 Alliances &amp; Channels</span>
+                </td>
+                <td>
+                    <a href="https://stripe.com/jobs/search?gh_jid=8126984" target="_blank" rel="noopener noreferrer">
+                        Channel Sales Executive, SaaS Platforms
+                    </a><br/>
+                    <span class="muted">Chicago</span>
+                </td>
+                <td>
+                    <span class="badge badge-cat">CRM Operations</span><br/>
+                    <span class="badge badge-manual">Direct Manual Execution</span>
+                </td>
+                <td class="evidence-cell">"Maintain accurate sales and partner activity records in Salesforce"</td>
+                <td class="date-cell">
+                    <div><strong>Published:</strong> 2026-09-10</div>
+                    <div><strong>Updated:</strong> 2026-10-29</div>
+                </td>
+                <td class="intent-cell">
+                    <div class="intent-warning">NO DIRECT BUYING INTENT: Hiring a human operator/analyst to execute this recurring process indicates the team currently addresses the workload via headcount rather than external software procurement.</div>
+                </td>
+            </tr>
+            
+            <tr data-category="Reconciliation" data-subtype="DIRECT_MANUAL_EXECUTION">
+                <td>5</td>
+                <td>
+                    <strong>Stripe</strong><br/>
+                    <span class="muted">6420 Accounting</span>
+                </td>
+                <td>
+                    <a href="https://stripe.com/jobs/search?gh_jid=8357739" target="_blank" rel="noopener noreferrer">
+                        Controllership Intern
+                    </a><br/>
+                    <span class="muted">Seattle, WA</span>
+                </td>
+                <td>
+                    <span class="badge badge-cat">Reconciliation</span><br/>
+                    <span class="badge badge-manual">Direct Manual Execution</span>
+                </td>
+                <td class="evidence-cell">"Prepare or support journal entries, account reconciliations, supporting schedules, variance analysis, and other accounting deliverables"</td>
+                <td class="date-cell">
+                    <div><strong>Published:</strong> 2026-11-06</div>
+                    <div><strong>Updated:</strong> 2026-11-06</div>
+                </td>
+                <td class="intent-cell">
+                    <div class="intent-warning">NO DIRECT BUYING INTENT: Hiring a human operator/analyst to execute this recurring process indicates the team currently addresses the workload via headcount rather than external software procurement.</div>
+                </td>
+            </tr>
+            
+            <tr data-category="Reconciliation" data-subtype="DIRECT_MANUAL_EXECUTION">
+                <td>6</td>
+                <td>
+                    <strong>Stripe</strong><br/>
+                    <span class="muted">4203 BFin - Accounting (SDC)</span>
+                </td>
+                <td>
+                    <a href="https://stripe.com/jobs/search?gh_jid=8273713" target="_blank" rel="noopener noreferrer">
+                        Corporate Accounting Analyst (Bangalore)
+                    </a><br/>
+                    <span class="muted">Bengaluru</span>
+                </td>
+                <td>
+                    <span class="badge badge-cat">Reconciliation</span><br/>
+                    <span class="badge badge-manual">Direct Manual Execution</span>
+                </td>
+                <td class="evidence-cell">"Own end-to-end accounting schedules, journal entries, and balance sheet reconciliations for corporate accounting areas ."</td>
+                <td class="date-cell">
+                    <div><strong>Published:</strong> 2026-10-15</div>
+                    <div><strong>Updated:</strong> 2026-10-29</div>
+                </td>
+                <td class="intent-cell">
+                    <div class="intent-warning">NO DIRECT BUYING INTENT: Hiring a human operator/analyst to execute this recurring process indicates the team currently addresses the workload via headcount rather than external software procurement.</div>
+                </td>
+            </tr>
+            
+            <tr data-category="Reconciliation" data-subtype="INTERNAL_AUTOMATION_MANDATE">
+                <td>7</td>
+                <td>
+                    <strong>Stripe</strong><br/>
+                    <span class="muted">4203 BFin - Accounting (SDC)</span>
+                </td>
+                <td>
+                    <a href="https://stripe.com/jobs/search?gh_jid=8273713" target="_blank" rel="noopener noreferrer">
+                        Corporate Accounting Analyst (Bangalore)
+                    </a><br/>
+                    <span class="muted">Bengaluru</span>
+                </td>
+                <td>
+                    <span class="badge badge-cat">Reconciliation</span><br/>
+                    <span class="badge badge-auto">Internal Automation Mandate</span>
+                </td>
+                <td class="evidence-cell">"Leverage ERP automation, analytical capabilities and AI-driven tools (e.g., prompt engineering, automated reconciliation workflows, intelligent data extraction) to enhance accuracy and timeliness."</td>
+                <td class="date-cell">
+                    <div><strong>Published:</strong> 2026-10-15</div>
+                    <div><strong>Updated:</strong> 2026-10-29</div>
+                </td>
+                <td class="intent-cell">
+                    <div class="intent-warning">NO DIRECT BUYING INTENT: While this confirms internal process pain, the company is actively hiring internal talent (and referencing internal AI/ERP tooling) to automate this workflow in-house.</div>
+                </td>
+            </tr>
+            
+            <tr data-category="Reconciliation" data-subtype="DIRECT_MANUAL_EXECUTION">
+                <td>8</td>
+                <td>
+                    <strong>Stripe</strong><br/>
+                    <span class="muted">6420 Accounting</span>
+                </td>
+                <td>
+                    <a href="https://stripe.com/jobs/search?gh_jid=7774312" target="_blank" rel="noopener noreferrer">
+                        Crypto Product Accounting
+                    </a><br/>
+                    <span class="muted">San Francisco, Seattle, New York</span>
+                </td>
+                <td>
+                    <span class="badge badge-cat">Reconciliation</span><br/>
+                    <span class="badge badge-manual">Direct Manual Execution</span>
+                </td>
+                <td class="evidence-cell">"Own P&amp;L accounting for Bridge&#x27;s products, including journal entries, reconciliations, variance analyses, financial reporting deliverables, and analytical reviews"</td>
+                <td class="date-cell">
+                    <div><strong>Published:</strong> 2026-04-02</div>
+                    <div><strong>Updated:</strong> 2026-11-09</div>
+                </td>
+                <td class="intent-cell">
+                    <div class="intent-warning">NO DIRECT BUYING INTENT: Hiring a human operator/analyst to execute this recurring process indicates the team currently addresses the workload via headcount rather than external software procurement.</div>
+                </td>
+            </tr>
+            
+            <tr data-category="Reconciliation" data-subtype="DIRECT_MANUAL_EXECUTION">
+                <td>9</td>
+                <td>
+                    <strong>Stripe</strong><br/>
+                    <span class="muted">6420 Accounting</span>
+                </td>
+                <td>
+                    <a href="https://stripe.com/jobs/search?gh_jid=8240148" target="_blank" rel="noopener noreferrer">
+                        Equity and Reporting Accounting
+                    </a><br/>
+                    <span class="muted">San Francisco, Seattle </span>
+                </td>
+                <td>
+                    <span class="badge badge-cat">Reconciliation</span><br/>
+                    <span class="badge badge-manual">Direct Manual Execution</span>
+                </td>
+                <td class="evidence-cell">"Plan and perform monthly and quarterly close activities, including journal entries, balance sheet reconciliations, variance analyses, financial reporting deliverables, and analytical reviews with a focus on Equity and Stock Based Compensation"</td>
+                <td class="date-cell">
+                    <div><strong>Published:</strong> 2026-09-30</div>
+                    <div><strong>Updated:</strong> 2026-11-11</div>
+                </td>
+                <td class="intent-cell">
+                    <div class="intent-warning">NO DIRECT BUYING INTENT: Hiring a human operator/analyst to execute this recurring process indicates the team currently addresses the workload via headcount rather than external software procurement.</div>
+                </td>
+            </tr>
+            
+            <tr data-category="Reconciliation" data-subtype="DIRECT_MANUAL_EXECUTION">
+                <td>10</td>
+                <td>
+                    <strong>Stripe</strong><br/>
+                    <span class="muted">8278 MaaS APAC</span>
+                </td>
+                <td>
+                    <a href="https://stripe.com/jobs/search?gh_jid=8282171" target="_blank" rel="noopener noreferrer">
+                        Integration Reliability Engineer, Technical Operations
+                    </a><br/>
+                    <span class="muted">Singapore</span>
+                </td>
+                <td>
+                    <span class="badge badge-cat">Reconciliation</span><br/>
+                    <span class="badge badge-manual">Direct Manual Execution</span>
+                </td>
+                <td class="evidence-cell">"One week that means working through a partner specification and reconciling settlement files; the next, shipping tooling or running an operational review with a partner&#x27;s engineering team."</td>
+                <td class="date-cell">
+                    <div><strong>Published:</strong> 2026-11-12</div>
+                    <div><strong>Updated:</strong> 2026-11-12</div>
+                </td>
+                <td class="intent-cell">
+                    <div class="intent-warning">NO DIRECT BUYING INTENT: Hiring a human operator/analyst to execute this recurring process indicates the team currently addresses the workload via headcount rather than external software procurement.</div>
+                </td>
+            </tr>
+            
+            <tr data-category="CRM Operations" data-subtype="DIRECT_MANUAL_EXECUTION">
+                <td>11</td>
+                <td>
+                    <strong>Stripe</strong><br/>
+                    <span class="muted">2414 Works in Progress</span>
+                </td>
+                <td>
+                    <a href="https://stripe.com/jobs/search?gh_jid=8241571" target="_blank" rel="noopener noreferrer">
+                        Junior Commercial Associate, Works in Progress
+                    </a><br/>
+                    <span class="muted">London</span>
+                </td>
+                <td>
+                    <span class="badge badge-cat">CRM Operations</span><br/>
+                    <span class="badge badge-manual">Direct Manual Execution</span>
+                </td>
+                <td class="evidence-cell">"Maintain accurate CRM records, commercial trackers and reporting."</td>
+                <td class="date-cell">
+                    <div><strong>Published:</strong> 2026-10-05</div>
+                    <div><strong>Updated:</strong> 2026-11-05</div>
+                </td>
+                <td class="intent-cell">
+                    <div class="intent-warning">NO DIRECT BUYING INTENT: Hiring a human operator/analyst to execute this recurring process indicates the team currently addresses the workload via headcount rather than external software procurement.</div>
+                </td>
+            </tr>
+            
+            <tr data-category="Reconciliation" data-subtype="DIRECT_MANUAL_EXECUTION">
+                <td>12</td>
+                <td>
+                    <strong>Stripe</strong><br/>
+                    <span class="muted">4203 BFin - Accounting (SDC)</span>
+                </td>
+                <td>
+                    <a href="https://stripe.com/jobs/search?gh_jid=6209187" target="_blank" rel="noopener noreferrer">
+                        Legal Entity Controller
+                    </a><br/>
+                    <span class="muted">Bangalore</span>
+                </td>
+                <td>
+                    <span class="badge badge-cat">Reconciliation</span><br/>
+                    <span class="badge badge-manual">Direct Manual Execution</span>
+                </td>
+                <td class="evidence-cell">"Oversee monthly, quarterly, and year-end close, leading complex journal entries, reconciliations, technical accounting assessments, variance analysis, and executive reporting packages"</td>
+                <td class="date-cell">
+                    <div><strong>Published:</strong> 2024-10-15</div>
+                    <div><strong>Updated:</strong> 2026-11-03</div>
+                </td>
+                <td class="intent-cell">
+                    <div class="intent-warning">NO DIRECT BUYING INTENT: Hiring a human operator/analyst to execute this recurring process indicates the team currently addresses the workload via headcount rather than external software procurement.</div>
+                </td>
+            </tr>
+            
+            <tr data-category="Reconciliation" data-subtype="DIRECT_MANUAL_EXECUTION">
+                <td>13</td>
+                <td>
+                    <strong>Stripe</strong><br/>
+                    <span class="muted">6420 Accounting</span>
+                </td>
+                <td>
+                    <a href="https://stripe.com/jobs/search?gh_jid=8237505" target="_blank" rel="noopener noreferrer">
+                        M&amp;A/Integration Accounting Lead
+                    </a><br/>
+                    <span class="muted">San Francisco</span>
+                </td>
+                <td>
+                    <span class="badge badge-cat">Reconciliation</span><br/>
+                    <span class="badge badge-manual">Direct Manual Execution</span>
+                </td>
+                <td class="evidence-cell">"Plan and perform monthly and quarterly close activities, including balance sheet reconciliations, variance analyses and analytical reviews, producing internal management reporting and external audit support"</td>
+                <td class="date-cell">
+                    <div><strong>Published:</strong> 2026-09-29</div>
+                    <div><strong>Updated:</strong> 2026-10-29</div>
+                </td>
+                <td class="intent-cell">
+                    <div class="intent-warning">NO DIRECT BUYING INTENT: Hiring a human operator/analyst to execute this recurring process indicates the team currently addresses the workload via headcount rather than external software procurement.</div>
+                </td>
+            </tr>
+            
+            <tr data-category="Data Entry" data-subtype="DIRECT_MANUAL_EXECUTION">
+                <td>14</td>
+                <td>
+                    <strong>Stripe</strong><br/>
+                    <span class="muted">4203 BFin - Accounting (SDC)</span>
+                </td>
+                <td>
+                    <a href="https://stripe.com/jobs/search?gh_jid=7703750" target="_blank" rel="noopener noreferrer">
+                        Manager - Legal Entity Controller
+                    </a><br/>
+                    <span class="muted">Bengaluru</span>
+                </td>
+                <td>
+                    <span class="badge badge-cat">Data Entry</span><br/>
+                    <span class="badge badge-manual">Direct Manual Execution</span>
+                </td>
+                <td class="evidence-cell">"Perform and drive monthly and quarterly close activities, including manual journal entries, balance sheet reconciliations, variance analyses, and analytical reviews, producing internal management reporting and external audit support"</td>
+                <td class="date-cell">
+                    <div><strong>Published:</strong> 2026-03-25</div>
+                    <div><strong>Updated:</strong> 2026-10-29</div>
+                </td>
+                <td class="intent-cell">
+                    <div class="intent-warning">NO DIRECT BUYING INTENT: Hiring a human operator/analyst to execute this recurring process indicates the team currently addresses the workload via headcount rather than external software procurement.</div>
+                </td>
+            </tr>
+            
+            <tr data-category="Reconciliation" data-subtype="DIRECT_MANUAL_EXECUTION">
+                <td>15</td>
+                <td>
+                    <strong>Stripe</strong><br/>
+                    <span class="muted">2315 Marketing - Marketing Operations</span>
+                </td>
+                <td>
+                    <a href="https://stripe.com/jobs/search?gh_jid=8250483" target="_blank" rel="noopener noreferrer">
+                        Marketing Operations Manager, AMER Events
+                    </a><br/>
+                    <span class="muted">US Remote; Canada</span>
+                </td>
+                <td>
+                    <span class="badge badge-cat">Reconciliation</span><br/>
+                    <span class="badge badge-manual">Direct Manual Execution</span>
+                </td>
+                <td class="evidence-cell">"Manage the accurate capture, validation, enrichment, and reconciliation of attendee and non-attendee data."</td>
+                <td class="date-cell">
+                    <div><strong>Published:</strong> 2026-10-09</div>
+                    <div><strong>Updated:</strong> 2026-10-29</div>
+                </td>
+                <td class="intent-cell">
+                    <div class="intent-warning">NO DIRECT BUYING INTENT: Hiring a human operator/analyst to execute this recurring process indicates the team currently addresses the workload via headcount rather than external software procurement.</div>
+                </td>
+            </tr>
+            
+            <tr data-category="Reconciliation" data-subtype="DIRECT_MANUAL_EXECUTION">
+                <td>16</td>
+                <td>
+                    <strong>Stripe</strong><br/>
+                    <span class="muted">2315 Marketing - Marketing Operations</span>
+                </td>
+                <td>
+                    <a href="https://stripe.com/jobs/search?gh_jid=8176256" target="_blank" rel="noopener noreferrer">
+                        Marketing Operations Manager, APAC Events
+                    </a><br/>
+                    <span class="muted">Singapore</span>
+                </td>
+                <td>
+                    <span class="badge badge-cat">Reconciliation</span><br/>
+                    <span class="badge badge-manual">Direct Manual Execution</span> <span class="badge badge-dup" title="Identical bullet in multi-region posting">Regional Duplicate</span>
+                </td>
+                <td class="evidence-cell">"Manage the accurate capture, validation, enrichment, and reconciliation of attendee and non-attendee data."</td>
+                <td class="date-cell">
+                    <div><strong>Published:</strong> 2026-09-15</div>
+                    <div><strong>Updated:</strong> 2026-10-29</div>
+                </td>
+                <td class="intent-cell">
+                    <div class="intent-warning">NO DIRECT BUYING INTENT: Hiring a human operator/analyst to execute this recurring process indicates the team currently addresses the workload via headcount rather than external software procurement.</div>
+                </td>
+            </tr>
+            
+            <tr data-category="Reconciliation" data-subtype="DIRECT_MANUAL_EXECUTION">
+                <td>17</td>
+                <td>
+                    <strong>Stripe</strong><br/>
+                    <span class="muted">6420 Accounting</span>
+                </td>
+                <td>
+                    <a href="https://stripe.com/jobs/search?gh_jid=8348327" target="_blank" rel="noopener noreferrer">
+                        OpenRouter Product Accounting
+                    </a><br/>
+                    <span class="muted">Seattle, San Francisco, New York, Chicago </span>
+                </td>
+                <td>
+                    <span class="badge badge-cat">Reconciliation</span><br/>
+                    <span class="badge badge-manual">Direct Manual Execution</span>
+                </td>
+                <td class="evidence-cell">"Own P&amp;L accounting for OpenRouter’s products, including journal entries, reconciliations, variance analyses, financial reporting deliverables, and analytical reviews"</td>
+                <td class="date-cell">
+                    <div><strong>Published:</strong> 2026-11-06</div>
+                    <div><strong>Updated:</strong> 2026-11-10</div>
+                </td>
+                <td class="intent-cell">
+                    <div class="intent-warning">NO DIRECT BUYING INTENT: Hiring a human operator/analyst to execute this recurring process indicates the team currently addresses the workload via headcount rather than external software procurement.</div>
+                </td>
+            </tr>
+            
+            <tr data-category="Reconciliation" data-subtype="DIRECT_MANUAL_EXECUTION">
+                <td>18</td>
+                <td>
+                    <strong>Stripe</strong><br/>
+                    <span class="muted">4138 SDC - Tech Ops</span>
+                </td>
+                <td>
+                    <a href="https://stripe.com/jobs/search?gh_jid=7975721" target="_blank" rel="noopener noreferrer">
+                        Payments Analyst
+                    </a><br/>
+                    <span class="muted">LOCATION</span>
+                </td>
+                <td>
+                    <span class="badge badge-cat">Reconciliation</span><br/>
+                    <span class="badge badge-manual">Direct Manual Execution</span>
+                </td>
+                <td class="evidence-cell">"Own reconciliation and payments-related investigations, ensuring accurate ledgering of funds and resolving discrepancies with banking partners swiftly and precisely."</td>
+                <td class="date-cell">
+                    <div><strong>Published:</strong> 2026-06-09</div>
+                    <div><strong>Updated:</strong> 2026-11-02</div>
+                </td>
+                <td class="intent-cell">
+                    <div class="intent-warning">NO DIRECT BUYING INTENT: Hiring a human operator/analyst to execute this recurring process indicates the team currently addresses the workload via headcount rather than external software procurement.</div>
+                </td>
+            </tr>
+            
+            <tr data-category="Data Entry" data-subtype="DIRECT_MANUAL_EXECUTION">
+                <td>19</td>
+                <td>
+                    <strong>Stripe</strong><br/>
+                    <span class="muted">6514 People Operations SDC</span>
+                </td>
+                <td>
+                    <a href="https://stripe.com/jobs/search?gh_jid=8248102" target="_blank" rel="noopener noreferrer">
+                        People Operations Associate (11-Month FTC)
+                    </a><br/>
+                    <span class="muted">Dublin, Ireland</span>
+                </td>
+                <td>
+                    <span class="badge badge-cat">Data Entry</span><br/>
+                    <span class="badge badge-manual">Direct Manual Execution</span>
+                </td>
+                <td class="evidence-cell">"HRIS Management and Integrity: Maintain the accuracy and integrity of our HR Information System (Workday) by accurately entering employee change transactions manually and through bulk data uploads, ensuring a robust and reliable foundation for all HR data."</td>
+                <td class="date-cell">
+                    <div><strong>Published:</strong> 2026-10-05</div>
+                    <div><strong>Updated:</strong> 2026-11-12</div>
+                </td>
+                <td class="intent-cell">
+                    <div class="intent-warning">NO DIRECT BUYING INTENT: Hiring a human operator/analyst to execute this recurring process indicates the team currently addresses the workload via headcount rather than external software procurement.</div>
+                </td>
+            </tr>
+            
+            <tr data-category="Data Entry" data-subtype="DIRECT_MANUAL_EXECUTION">
+                <td>20</td>
+                <td>
+                    <strong>Stripe</strong><br/>
+                    <span class="muted">6514 People Operations SDC</span>
+                </td>
+                <td>
+                    <a href="https://stripe.com/jobs/search?gh_jid=8049722" target="_blank" rel="noopener noreferrer">
+                        People Operations Associate (Centralized Operations)
+                    </a><br/>
+                    <span class="muted">Mexico City</span>
+                </td>
+                <td>
+                    <span class="badge badge-cat">Data Entry</span><br/>
+                    <span class="badge badge-manual">Direct Manual Execution</span>
+                </td>
+                <td class="evidence-cell">"Maintain the accuracy and integrity of People data through careful data entry, audits, and issue resolution."</td>
+                <td class="date-cell">
+                    <div><strong>Published:</strong> 2026-07-17</div>
+                    <div><strong>Updated:</strong> 2026-10-29</div>
+                </td>
+                <td class="intent-cell">
+                    <div class="intent-warning">NO DIRECT BUYING INTENT: Hiring a human operator/analyst to execute this recurring process indicates the team currently addresses the workload via headcount rather than external software procurement.</div>
+                </td>
+            </tr>
+            
+            <tr data-category="Reconciliation" data-subtype="DIRECT_MANUAL_EXECUTION">
+                <td>21</td>
+                <td>
+                    <strong>Stripe</strong><br/>
+                    <span class="muted">6426 Monetization Operations</span>
+                </td>
+                <td>
+                    <a href="https://stripe.com/jobs/search?gh_jid=8241855" target="_blank" rel="noopener noreferrer">
+                        Pricing Activation Specialist
+                    </a><br/>
+                    <span class="muted">SEA</span>
+                </td>
+                <td>
+                    <span class="badge badge-cat">Reconciliation</span><br/>
+                    <span class="badge badge-manual">Direct Manual Execution</span>
+                </td>
+                <td class="evidence-cell">"Perform quality-control and reconciliation checks to confirm that configurations produce the expected billing outcomes."</td>
+                <td class="date-cell">
+                    <div><strong>Published:</strong> 2026-10-01</div>
+                    <div><strong>Updated:</strong> 2026-11-10</div>
+                </td>
+                <td class="intent-cell">
+                    <div class="intent-warning">NO DIRECT BUYING INTENT: Hiring a human operator/analyst to execute this recurring process indicates the team currently addresses the workload via headcount rather than external software procurement.</div>
+                </td>
+            </tr>
+            
+            <tr data-category="Reconciliation" data-subtype="DIRECT_MANUAL_EXECUTION">
+                <td>22</td>
+                <td>
+                    <strong>Stripe</strong><br/>
+                    <span class="muted">4203 BFin - Accounting (SDC)</span>
+                </td>
+                <td>
+                    <a href="https://stripe.com/jobs/search?gh_jid=8324207" target="_blank" rel="noopener noreferrer">
+                        Processing Cost Analyst
+                    </a><br/>
+                    <span class="muted">IN-Bengaluru</span>
+                </td>
+                <td>
+                    <span class="badge badge-cat">Reconciliation</span><br/>
+                    <span class="badge badge-manual">Direct Manual Execution</span>
+                </td>
+                <td class="evidence-cell">"Plan and perform monthly and quarterly close activities, including journal entries, balance-sheet reconciliations, variance analyses, financial reporting deliverables, and reviews"</td>
+                <td class="date-cell">
+                    <div><strong>Published:</strong> 2026-10-26</div>
+                    <div><strong>Updated:</strong> 2026-11-02</div>
+                </td>
+                <td class="intent-cell">
+                    <div class="intent-warning">NO DIRECT BUYING INTENT: Hiring a human operator/analyst to execute this recurring process indicates the team currently addresses the workload via headcount rather than external software procurement.</div>
+                </td>
+            </tr>
+            
+            <tr data-category="Reconciliation" data-subtype="DIRECT_MANUAL_EXECUTION">
+                <td>23</td>
+                <td>
+                    <strong>Stripe</strong><br/>
+                    <span class="muted">6420 Accounting</span>
+                </td>
+                <td>
+                    <a href="https://stripe.com/jobs/search?gh_jid=8350920" target="_blank" rel="noopener noreferrer">
+                        Revenue and Go-to-Market Accounting Lead
+                    </a><br/>
+                    <span class="muted">Seattle, San Francisco, New York </span>
+                </td>
+                <td>
+                    <span class="badge badge-cat">Reconciliation</span><br/>
+                    <span class="badge badge-manual">Direct Manual Execution</span>
+                </td>
+                <td class="evidence-cell">"Plan and perform monthly and quarterly close activities, including journal entries, balance sheet reconciliations, variance analyses, financial reporting deliverables, and analytical reviews"</td>
+                <td class="date-cell">
+                    <div><strong>Published:</strong> 2026-11-05</div>
+                    <div><strong>Updated:</strong> 2026-11-05</div>
+                </td>
+                <td class="intent-cell">
+                    <div class="intent-warning">NO DIRECT BUYING INTENT: Hiring a human operator/analyst to execute this recurring process indicates the team currently addresses the workload via headcount rather than external software procurement.</div>
+                </td>
+            </tr>
+            
+            <tr data-category="Reporting" data-subtype="INTERNAL_AUTOMATION_MANDATE">
+                <td>24</td>
+                <td>
+                    <strong>Stripe</strong><br/>
+                    <span class="muted">1520 Sales Operations (SS&amp;O)</span>
+                </td>
+                <td>
+                    <a href="https://stripe.com/jobs/search?gh_jid=8224620" target="_blank" rel="noopener noreferrer">
+                        Strategy &amp; Operations Business Partner, Customer Success
+                    </a><br/>
+                    <span class="muted">Chicago, US</span>
+                </td>
+                <td>
+                    <span class="badge badge-cat">Reporting</span><br/>
+                    <span class="badge badge-auto">Internal Automation Mandate</span>
+                </td>
+                <td class="evidence-cell">"Develop scalable, automated reports and dashboards that meet key business and leadership reporting requirement, and reduce manual effort and operational overhead"</td>
+                <td class="date-cell">
+                    <div><strong>Published:</strong> 2026-09-25</div>
+                    <div><strong>Updated:</strong> 2026-10-29</div>
+                </td>
+                <td class="intent-cell">
+                    <div class="intent-warning">NO DIRECT BUYING INTENT: While this confirms internal process pain, the company is actively hiring internal talent (and referencing internal AI/ERP tooling) to automate this workflow in-house.</div>
+                </td>
+            </tr>
+            
+            <tr data-category="Reconciliation" data-subtype="DIRECT_MANUAL_EXECUTION">
+                <td>25</td>
+                <td>
+                    <strong>Stripe</strong><br/>
+                    <span class="muted">4138 SDC - Tech Ops</span>
+                </td>
+                <td>
+                    <a href="https://stripe.com/jobs/search?gh_jid=8045862" target="_blank" rel="noopener noreferrer">
+                        Tech Ops Team Lead
+                    </a><br/>
+                    <span class="muted">Bengaluru</span>
+                </td>
+                <td>
+                    <span class="badge badge-cat">Reconciliation</span><br/>
+                    <span class="badge badge-manual">Direct Manual Execution</span>
+                </td>
+                <td class="evidence-cell">"Lead independent discussions with TechOps, Engineering and XFN Partners to unblock complex reconciliation issues."</td>
+                <td class="date-cell">
+                    <div><strong>Published:</strong> 2026-07-16</div>
+                    <div><strong>Updated:</strong> 2026-11-02</div>
+                </td>
+                <td class="intent-cell">
+                    <div class="intent-warning">NO DIRECT BUYING INTENT: Hiring a human operator/analyst to execute this recurring process indicates the team currently addresses the workload via headcount rather than external software procurement.</div>
+                </td>
+            </tr>
+            
+            <tr data-category="CRM Operations" data-subtype="DIRECT_MANUAL_EXECUTION">
+                <td>26</td>
+                <td>
+                    <strong>Cloudflare</strong><br/>
+                    <span class="muted">Field Sales</span>
+                </td>
+                <td>
+                    <a href="https://boards.greenhouse.io/cloudflare/jobs/7735836?gh_jid=7735836" target="_blank" rel="noopener noreferrer">
+                        Digital Natives Account Executive
+                    </a><br/>
+                    <span class="muted">Hybrid</span>
+                </td>
+                <td>
+                    <span class="badge badge-cat">CRM Operations</span><br/>
+                    <span class="badge badge-manual">Direct Manual Execution</span>
+                </td>
+                <td class="evidence-cell">"Maintain accurate pipeline, forecasting, and MEDDPIC discipline in Salesforce"</td>
+                <td class="date-cell">
+                    <div><strong>Published:</strong> 2026-04-22</div>
+                    <div><strong>Updated:</strong> 2026-11-09</div>
+                </td>
+                <td class="intent-cell">
+                    <div class="intent-warning">NO DIRECT BUYING INTENT: Hiring a human operator/analyst to execute this recurring process indicates the team currently addresses the workload via headcount rather than external software procurement.</div>
+                </td>
+            </tr>
+            
+            <tr data-category="Reconciliation" data-subtype="INTERNAL_AUTOMATION_MANDATE">
+                <td>27</td>
+                <td>
+                    <strong>Cloudflare</strong><br/>
+                    <span class="muted">Sales Ops</span>
+                </td>
+                <td>
+                    <a href="https://boards.greenhouse.io/cloudflare/jobs/8301509?gh_jid=8301509" target="_blank" rel="noopener noreferrer">
+                        GTM Data Specialist, Consumption &amp; Revenue Operations
+                    </a><br/>
+                    <span class="muted">Hybrid</span>
+                </td>
+                <td>
+                    <span class="badge badge-cat">Reconciliation</span><br/>
+                    <span class="badge badge-auto">Internal Automation Mandate</span>
+                </td>
+                <td class="evidence-cell">"Use AI to scale the work: Use AI tools, to write and review SQL, speed up reconciliations, draft answers to common field questions, and automate recurring checks."</td>
+                <td class="date-cell">
+                    <div><strong>Published:</strong> 2026-10-21</div>
+                    <div><strong>Updated:</strong> 2026-11-09</div>
+                </td>
+                <td class="intent-cell">
+                    <div class="intent-warning">NO DIRECT BUYING INTENT: While this confirms internal process pain, the company is actively hiring internal talent (and referencing internal AI/ERP tooling) to automate this workflow in-house.</div>
+                </td>
+            </tr>
+            
+            <tr data-category="Reconciliation" data-subtype="DIRECT_MANUAL_EXECUTION">
+                <td>28</td>
+                <td>
+                    <strong>Cloudflare</strong><br/>
+                    <span class="muted">Infrastructure</span>
+                </td>
+                <td>
+                    <a href="https://boards.greenhouse.io/cloudflare/jobs/8278383?gh_jid=8278383" target="_blank" rel="noopener noreferrer">
+                        Infrastructure Business Operations Associate
+                    </a><br/>
+                    <span class="muted">Hybrid</span>
+                </td>
+                <td>
+                    <span class="badge badge-cat">Reconciliation</span><br/>
+                    <span class="badge badge-manual">Direct Manual Execution</span>
+                </td>
+                <td class="evidence-cell">"Partner with Finance, Supply Planning, Engineering, Procurement, and operations teams to reconcile data, clarify ownership, and keep work moving."</td>
+                <td class="date-cell">
+                    <div><strong>Published:</strong> 2026-10-14</div>
+                    <div><strong>Updated:</strong> 2026-11-09</div>
+                </td>
+                <td class="intent-cell">
+                    <div class="intent-warning">NO DIRECT BUYING INTENT: Hiring a human operator/analyst to execute this recurring process indicates the team currently addresses the workload via headcount rather than external software procurement.</div>
+                </td>
+            </tr>
+            
+            <tr data-category="Spreadsheets" data-subtype="INTERNAL_AUTOMATION_MANDATE">
+                <td>29</td>
+                <td>
+                    <strong>Cloudflare</strong><br/>
+                    <span class="muted">Infrastructure</span>
+                </td>
+                <td>
+                    <a href="https://boards.greenhouse.io/cloudflare/jobs/8278383?gh_jid=8278383" target="_blank" rel="noopener noreferrer">
+                        Infrastructure Business Operations Associate
+                    </a><br/>
+                    <span class="muted">Hybrid</span>
+                </td>
+                <td>
+                    <span class="badge badge-cat">Spreadsheets</span><br/>
+                    <span class="badge badge-auto">Internal Automation Mandate</span>
+                </td>
+                <td class="evidence-cell">"Improve recurring workflows using spreadsheets, SQL, AI tools, lightweight automation, and clear documentation; help maintain trusted data and controls."</td>
+                <td class="date-cell">
+                    <div><strong>Published:</strong> 2026-10-14</div>
+                    <div><strong>Updated:</strong> 2026-11-09</div>
+                </td>
+                <td class="intent-cell">
+                    <div class="intent-warning">NO DIRECT BUYING INTENT: While this confirms internal process pain, the company is actively hiring internal talent (and referencing internal AI/ERP tooling) to automate this workflow in-house.</div>
+                </td>
+            </tr>
+            
+            <tr data-category="Reporting" data-subtype="INTERNAL_AUTOMATION_MANDATE">
+                <td>30</td>
+                <td>
+                    <strong>Cloudflare</strong><br/>
+                    <span class="muted">Strategy</span>
+                </td>
+                <td>
+                    <a href="https://boards.greenhouse.io/cloudflare/jobs/8304143?gh_jid=8304143" target="_blank" rel="noopener noreferrer">
+                        Operations Manager, Strategic Partnerships
+                    </a><br/>
+                    <span class="muted">Hybrid</span>
+                </td>
+                <td>
+                    <span class="badge badge-cat">Reporting</span><br/>
+                    <span class="badge badge-auto">Internal Automation Mandate</span>
+                </td>
+                <td class="evidence-cell">"Workflow Automation: Utilize modern AI tools and automated workflows to centralize partner data, streamline pipeline management, and reduce manual reporting overhead."</td>
+                <td class="date-cell">
+                    <div><strong>Published:</strong> 2026-10-21</div>
+                    <div><strong>Updated:</strong> 2026-11-09</div>
+                </td>
+                <td class="intent-cell">
+                    <div class="intent-warning">NO DIRECT BUYING INTENT: While this confirms internal process pain, the company is actively hiring internal talent (and referencing internal AI/ERP tooling) to automate this workflow in-house.</div>
+                </td>
+            </tr>
+            
+            <tr data-category="Reporting" data-subtype="INTERNAL_AUTOMATION_MANDATE">
+                <td>31</td>
+                <td>
+                    <strong>Cloudflare</strong><br/>
+                    <span class="muted">Engineering</span>
+                </td>
+                <td>
+                    <a href="https://boards.greenhouse.io/cloudflare/jobs/8267826?gh_jid=8267826" target="_blank" rel="noopener noreferrer">
+                        Rack Integration Operations Engineer
+                    </a><br/>
+                    <span class="muted">Hybrid</span>
+                </td>
+                <td>
+                    <span class="badge badge-cat">Reporting</span><br/>
+                    <span class="badge badge-auto">Internal Automation Mandate</span>
+                </td>
+                <td class="evidence-cell">"Automate Operational Workflows: Identify manual, repetitive tasks across BOM reviews, reporting, and partner tracking, using AI tools and LLM prompt engineering to streamline processes."</td>
+                <td class="date-cell">
+                    <div><strong>Published:</strong> 2026-10-09</div>
+                    <div><strong>Updated:</strong> 2026-11-09</div>
+                </td>
+                <td class="intent-cell">
+                    <div class="intent-warning">NO DIRECT BUYING INTENT: While this confirms internal process pain, the company is actively hiring internal talent (and referencing internal AI/ERP tooling) to automate this workflow in-house.</div>
+                </td>
+            </tr>
+            
+            <tr data-category="Reconciliation" data-subtype="DIRECT_MANUAL_EXECUTION">
+                <td>32</td>
+                <td>
+                    <strong>Cloudflare</strong><br/>
+                    <span class="muted">Information Technology</span>
+                </td>
+                <td>
+                    <a href="https://boards.greenhouse.io/cloudflare/jobs/7978887?gh_jid=7978887" target="_blank" rel="noopener noreferrer">
+                        Senior Oracle EPM Specialist
+                    </a><br/>
+                    <span class="muted">In-Office</span>
+                </td>
+                <td>
+                    <span class="badge badge-cat">Reconciliation</span><br/>
+                    <span class="badge badge-manual">Direct Manual Execution</span>
+                </td>
+                <td class="evidence-cell">"The EPM Specialist will absorb knowledge transfer from implementation partners and serve as the primary operational lead for Financial Consolidation and Close - FCCS, Account Reconciliation - ARCS, Profitability and Cost Management - PCMCS, and Enterprise Data Management - EDMCS."</td>
+                <td class="date-cell">
+                    <div><strong>Published:</strong> 2026-06-08</div>
+                    <div><strong>Updated:</strong> 2026-11-09</div>
+                </td>
+                <td class="intent-cell">
+                    <div class="intent-warning">NO DIRECT BUYING INTENT: Hiring a human operator/analyst to execute this recurring process indicates the team currently addresses the workload via headcount rather than external software procurement.</div>
+                </td>
+            </tr>
+            
+            <tr data-category="CRM Operations" data-subtype="DIRECT_MANUAL_EXECUTION">
+                <td>33</td>
+                <td>
+                    <strong>GitLab</strong><br/>
+                    <span class="muted">Renewals</span>
+                </td>
+                <td>
+                    <a href="https://job-boards.greenhouse.io/gitlab/jobs/8857185002" target="_blank" rel="noopener noreferrer">
+                        Associate Renewals Manager, SMB
+                    </a><br/>
+                    <span class="muted">Remote, Canada; Remote, United States</span>
+                </td>
+                <td>
+                    <span class="badge badge-cat">CRM Operations</span><br/>
+                    <span class="badge badge-manual">Direct Manual Execution</span>
+                </td>
+                <td class="evidence-cell">"Maintain accurate, up-to-date records in the CRM/renewals system for forecasting and reporting."</td>
+                <td class="date-cell">
+                    <div><strong>Published:</strong> 2026-09-29</div>
+                    <div><strong>Updated:</strong> 2026-11-06</div>
+                </td>
+                <td class="intent-cell">
+                    <div class="intent-warning">NO DIRECT BUYING INTENT: Hiring a human operator/analyst to execute this recurring process indicates the team currently addresses the workload via headcount rather than external software procurement.</div>
+                </td>
+            </tr>
+            
+            <tr data-category="Reconciliation" data-subtype="DIRECT_MANUAL_EXECUTION">
+                <td>34</td>
+                <td>
+                    <strong>GitLab</strong><br/>
+                    <span class="muted">Total Rewards</span>
+                </td>
+                <td>
+                    <a href="https://job-boards.greenhouse.io/gitlab/jobs/8864819002" target="_blank" rel="noopener noreferrer">
+                        Benefits Analyst
+                    </a><br/>
+                    <span class="muted">Bangalore, India</span>
+                </td>
+                <td>
+                    <span class="badge badge-cat">Reconciliation</span><br/>
+                    <span class="badge badge-manual">Direct Manual Execution</span>
+                </td>
+                <td class="evidence-cell">"Partner with Payroll, Finance, People Operations, and People Technology on accurate reporting, billing reconciliation, eligibility data, and compliance-related processes."</td>
+                <td class="date-cell">
+                    <div><strong>Published:</strong> 2026-10-09</div>
+                    <div><strong>Updated:</strong> 2026-11-06</div>
+                </td>
+                <td class="intent-cell">
+                    <div class="intent-warning">NO DIRECT BUYING INTENT: Hiring a human operator/analyst to execute this recurring process indicates the team currently addresses the workload via headcount rather than external software procurement.</div>
+                </td>
+            </tr>
+            
+            <tr data-category="CRM Operations" data-subtype="DIRECT_MANUAL_EXECUTION">
+                <td>35</td>
+                <td>
+                    <strong>GitLab</strong><br/>
+                    <span class="muted">Sales Development</span>
+                </td>
+                <td>
+                    <a href="https://job-boards.greenhouse.io/gitlab/jobs/8532272002" target="_blank" rel="noopener noreferrer">
+                        Business Development Representative
+                    </a><br/>
+                    <span class="muted">Remote, North America</span>
+                </td>
+                <td>
+                    <span class="badge badge-cat">CRM Operations</span><br/>
+                    <span class="badge badge-manual">Direct Manual Execution</span>
+                </td>
+                <td class="evidence-cell">"Manage, track, and accurately report all prospecting activities and pipeline in Salesforce to provide clear visibility into performance and forecast."</td>
+                <td class="date-cell">
+                    <div><strong>Published:</strong> 2026-05-01</div>
+                    <div><strong>Updated:</strong> 2026-11-06</div>
+                </td>
+                <td class="intent-cell">
+                    <div class="intent-warning">NO DIRECT BUYING INTENT: Hiring a human operator/analyst to execute this recurring process indicates the team currently addresses the workload via headcount rather than external software procurement.</div>
+                </td>
+            </tr>
+            
+            <tr data-category="CRM Operations" data-subtype="DIRECT_MANUAL_EXECUTION">
+                <td>36</td>
+                <td>
+                    <strong>GitLab</strong><br/>
+                    <span class="muted">Sales Development</span>
+                </td>
+                <td>
+                    <a href="https://job-boards.greenhouse.io/gitlab/jobs/8532274002" target="_blank" rel="noopener noreferrer">
+                        Business Development Representative
+                    </a><br/>
+                    <span class="muted">Remote, Ireland; Remote, Spain; Remote, United Kingdom</span>
+                </td>
+                <td>
+                    <span class="badge badge-cat">CRM Operations</span><br/>
+                    <span class="badge badge-manual">Direct Manual Execution</span> <span class="badge badge-dup" title="Identical bullet in multi-region posting">Regional Duplicate</span>
+                </td>
+                <td class="evidence-cell">"Manage, track, and accurately report all prospecting activities and pipeline in Salesforce to provide clear visibility into performance and forecast."</td>
+                <td class="date-cell">
+                    <div><strong>Published:</strong> 2026-05-01</div>
+                    <div><strong>Updated:</strong> 2026-11-06</div>
+                </td>
+                <td class="intent-cell">
+                    <div class="intent-warning">NO DIRECT BUYING INTENT: Hiring a human operator/analyst to execute this recurring process indicates the team currently addresses the workload via headcount rather than external software procurement.</div>
+                </td>
+            </tr>
+            
+            <tr data-category="CRM Operations" data-subtype="DIRECT_MANUAL_EXECUTION">
+                <td>37</td>
+                <td>
+                    <strong>GitLab</strong><br/>
+                    <span class="muted">Sales Development</span>
+                </td>
+                <td>
+                    <a href="https://job-boards.greenhouse.io/gitlab/jobs/8932246002" target="_blank" rel="noopener noreferrer">
+                        Business Development Representative, Financial Services
+                    </a><br/>
+                    <span class="muted">Remote, Canada; Remote, United States</span>
+                </td>
+                <td>
+                    <span class="badge badge-cat">CRM Operations</span><br/>
+                    <span class="badge badge-manual">Direct Manual Execution</span> <span class="badge badge-dup" title="Identical bullet in multi-region posting">Regional Duplicate</span>
+                </td>
+                <td class="evidence-cell">"Manage, track, and accurately report all prospecting activities and pipeline in Salesforce to provide clear visibility into performance and forecast."</td>
+                <td class="date-cell">
+                    <div><strong>Published:</strong> 2026-11-09</div>
+                    <div><strong>Updated:</strong> 2026-11-09</div>
+                </td>
+                <td class="intent-cell">
+                    <div class="intent-warning">NO DIRECT BUYING INTENT: Hiring a human operator/analyst to execute this recurring process indicates the team currently addresses the workload via headcount rather than external software procurement.</div>
+                </td>
+            </tr>
+            
+            <tr data-category="CRM Operations" data-subtype="DIRECT_MANUAL_EXECUTION">
+                <td>38</td>
+                <td>
+                    <strong>GitLab</strong><br/>
+                    <span class="muted">Sales Development</span>
+                </td>
+                <td>
+                    <a href="https://job-boards.greenhouse.io/gitlab/jobs/8872457002" target="_blank" rel="noopener noreferrer">
+                        Business Development Representative, German Speaking
+                    </a><br/>
+                    <span class="muted">Remote Ireland; Remote, Spain; Remote, United Kingdom</span>
+                </td>
+                <td>
+                    <span class="badge badge-cat">CRM Operations</span><br/>
+                    <span class="badge badge-manual">Direct Manual Execution</span> <span class="badge badge-dup" title="Identical bullet in multi-region posting">Regional Duplicate</span>
+                </td>
+                <td class="evidence-cell">"Manage, track, and accurately report all prospecting activities and pipeline in Salesforce to provide clear visibility into performance and forecast."</td>
+                <td class="date-cell">
+                    <div><strong>Published:</strong> 2026-10-07</div>
+                    <div><strong>Updated:</strong> 2026-11-06</div>
+                </td>
+                <td class="intent-cell">
+                    <div class="intent-warning">NO DIRECT BUYING INTENT: Hiring a human operator/analyst to execute this recurring process indicates the team currently addresses the workload via headcount rather than external software procurement.</div>
+                </td>
+            </tr>
+            
+            <tr data-category="CRM Operations" data-subtype="DIRECT_MANUAL_EXECUTION">
+                <td>39</td>
+                <td>
+                    <strong>GitLab</strong><br/>
+                    <span class="muted">Sales Development</span>
+                </td>
+                <td>
+                    <a href="https://job-boards.greenhouse.io/gitlab/jobs/8932282002" target="_blank" rel="noopener noreferrer">
+                        Business Development Representative, SLED - West
+                    </a><br/>
+                    <span class="muted">Remote, United States</span>
+                </td>
+                <td>
+                    <span class="badge badge-cat">CRM Operations</span><br/>
+                    <span class="badge badge-manual">Direct Manual Execution</span>
+                </td>
+                <td class="evidence-cell">"Manage, track, and report on all activities and results using Salesforce"</td>
+                <td class="date-cell">
+                    <div><strong>Published:</strong> 2026-11-09</div>
+                    <div><strong>Updated:</strong> 2026-11-09</div>
+                </td>
+                <td class="intent-cell">
+                    <div class="intent-warning">NO DIRECT BUYING INTENT: Hiring a human operator/analyst to execute this recurring process indicates the team currently addresses the workload via headcount rather than external software procurement.</div>
+                </td>
+            </tr>
+            
+            <tr data-category="CRM Operations" data-subtype="DIRECT_MANUAL_EXECUTION">
+                <td>40</td>
+                <td>
+                    <strong>GitLab</strong><br/>
+                    <span class="muted">Sales Development</span>
+                </td>
+                <td>
+                    <a href="https://job-boards.greenhouse.io/gitlab/jobs/8882367002" target="_blank" rel="noopener noreferrer">
+                        Business Development Representative, Spanish Speaking
+                    </a><br/>
+                    <span class="muted">Remote, Spain</span>
+                </td>
+                <td>
+                    <span class="badge badge-cat">CRM Operations</span><br/>
+                    <span class="badge badge-manual">Direct Manual Execution</span> <span class="badge badge-dup" title="Identical bullet in multi-region posting">Regional Duplicate</span>
+                </td>
+                <td class="evidence-cell">"Manage, track, and accurately report all prospecting activities and pipeline in Salesforce to provide clear visibility into performance and forecast."</td>
+                <td class="date-cell">
+                    <div><strong>Published:</strong> 2026-10-16</div>
+                    <div><strong>Updated:</strong> 2026-11-06</div>
+                </td>
+                <td class="intent-cell">
+                    <div class="intent-warning">NO DIRECT BUYING INTENT: Hiring a human operator/analyst to execute this recurring process indicates the team currently addresses the workload via headcount rather than external software procurement.</div>
+                </td>
+            </tr>
+            
+            <tr data-category="CRM Operations" data-subtype="DIRECT_MANUAL_EXECUTION">
+                <td>41</td>
+                <td>
+                    <strong>GitLab</strong><br/>
+                    <span class="muted">Sales Development</span>
+                </td>
+                <td>
+                    <a href="https://job-boards.greenhouse.io/gitlab/jobs/8932248002" target="_blank" rel="noopener noreferrer">
+                        Business Development Representative - West
+                    </a><br/>
+                    <span class="muted">Remote, Canada; Remote, United States</span>
+                </td>
+                <td>
+                    <span class="badge badge-cat">CRM Operations</span><br/>
+                    <span class="badge badge-manual">Direct Manual Execution</span> <span class="badge badge-dup" title="Identical bullet in multi-region posting">Regional Duplicate</span>
+                </td>
+                <td class="evidence-cell">"Manage, track, and accurately report all prospecting activities and pipeline in Salesforce to provide clear visibility into performance and forecast."</td>
+                <td class="date-cell">
+                    <div><strong>Published:</strong> 2026-11-09</div>
+                    <div><strong>Updated:</strong> 2026-11-12</div>
+                </td>
+                <td class="intent-cell">
+                    <div class="intent-warning">NO DIRECT BUYING INTENT: Hiring a human operator/analyst to execute this recurring process indicates the team currently addresses the workload via headcount rather than external software procurement.</div>
+                </td>
+            </tr>
+            
+            <tr data-category="Reconciliation" data-subtype="DIRECT_MANUAL_EXECUTION">
+                <td>42</td>
+                <td>
+                    <strong>GitLab</strong><br/>
+                    <span class="muted">FP&amp;A</span>
+                </td>
+                <td>
+                    <a href="https://job-boards.greenhouse.io/gitlab/jobs/8633807002" target="_blank" rel="noopener noreferrer">
+                        Lead SEC Analyst
+                    </a><br/>
+                    <span class="muted">Remote, United States</span>
+                </td>
+                <td>
+                    <span class="badge badge-cat">Reconciliation</span><br/>
+                    <span class="badge badge-manual">Direct Manual Execution</span>
+                </td>
+                <td class="evidence-cell">"Prepare or review journal entries, reconciliations, the equity rollforward, earnings per share calculations, and provided-by-client schedules for assigned areas such as stock-based compensation and stock repurchases."</td>
+                <td class="date-cell">
+                    <div><strong>Published:</strong> 2026-07-27</div>
+                    <div><strong>Updated:</strong> 2026-11-06</div>
+                </td>
+                <td class="intent-cell">
+                    <div class="intent-warning">NO DIRECT BUYING INTENT: Hiring a human operator/analyst to execute this recurring process indicates the team currently addresses the workload via headcount rather than external software procurement.</div>
+                </td>
+            </tr>
+            
+            <tr data-category="CRM Operations" data-subtype="DIRECT_MANUAL_EXECUTION">
+                <td>43</td>
+                <td>
+                    <strong>GitLab</strong><br/>
+                    <span class="muted">Renewals</span>
+                </td>
+                <td>
+                    <a href="https://job-boards.greenhouse.io/gitlab/jobs/8885115002" target="_blank" rel="noopener noreferrer">
+                        Renewals Manager EMEA
+                    </a><br/>
+                    <span class="muted">Remote Ireland</span>
+                </td>
+                <td>
+                    <span class="badge badge-cat">CRM Operations</span><br/>
+                    <span class="badge badge-manual">Direct Manual Execution</span> <span class="badge badge-dup" title="Identical bullet in multi-region posting">Regional Duplicate</span>
+                </td>
+                <td class="evidence-cell">"Maintain accurate, up-to-date records in the CRM/renewals system for forecasting and reporting."</td>
+                <td class="date-cell">
+                    <div><strong>Published:</strong> 2026-10-20</div>
+                    <div><strong>Updated:</strong> 2026-11-06</div>
+                </td>
+                <td class="intent-cell">
+                    <div class="intent-warning">NO DIRECT BUYING INTENT: Hiring a human operator/analyst to execute this recurring process indicates the team currently addresses the workload via headcount rather than external software procurement.</div>
+                </td>
+            </tr>
+            
+            <tr data-category="CRM Operations" data-subtype="DIRECT_MANUAL_EXECUTION">
+                <td>44</td>
+                <td>
+                    <strong>GitLab</strong><br/>
+                    <span class="muted">Renewals</span>
+                </td>
+                <td>
+                    <a href="https://job-boards.greenhouse.io/gitlab/jobs/8926653002" target="_blank" rel="noopener noreferrer">
+                        Renewals Manager - Italy/ Spain
+                    </a><br/>
+                    <span class="muted">Remote</span>
+                </td>
+                <td>
+                    <span class="badge badge-cat">CRM Operations</span><br/>
+                    <span class="badge badge-manual">Direct Manual Execution</span> <span class="badge badge-dup" title="Identical bullet in multi-region posting">Regional Duplicate</span>
+                </td>
+                <td class="evidence-cell">"Maintain accurate, up-to-date records in the CRM/renewals system for forecasting and reporting."</td>
+                <td class="date-cell">
+                    <div><strong>Published:</strong> 2026-11-13</div>
+                    <div><strong>Updated:</strong> 2026-11-13</div>
+                </td>
+                <td class="intent-cell">
+                    <div class="intent-warning">NO DIRECT BUYING INTENT: Hiring a human operator/analyst to execute this recurring process indicates the team currently addresses the workload via headcount rather than external software procurement.</div>
+                </td>
+            </tr>
+            
+            <tr data-category="CRM Operations" data-subtype="DIRECT_MANUAL_EXECUTION">
+                <td>45</td>
+                <td>
+                    <strong>GitLab</strong><br/>
+                    <span class="muted">Sales Development</span>
+                </td>
+                <td>
+                    <a href="https://job-boards.greenhouse.io/gitlab/jobs/8530337002" target="_blank" rel="noopener noreferrer">
+                        Sales Development Representative
+                    </a><br/>
+                    <span class="muted">Remote, North America</span>
+                </td>
+                <td>
+                    <span class="badge badge-cat">CRM Operations</span><br/>
+                    <span class="badge badge-manual">Direct Manual Execution</span> <span class="badge badge-dup" title="Identical bullet in multi-region posting">Regional Duplicate</span>
+                </td>
+                <td class="evidence-cell">"Manage, track, and report on all activities and results using Salesforce"</td>
+                <td class="date-cell">
+                    <div><strong>Published:</strong> 2026-05-01</div>
+                    <div><strong>Updated:</strong> 2026-11-06</div>
+                </td>
+                <td class="intent-cell">
+                    <div class="intent-warning">NO DIRECT BUYING INTENT: Hiring a human operator/analyst to execute this recurring process indicates the team currently addresses the workload via headcount rather than external software procurement.</div>
+                </td>
+            </tr>
+            
+            <tr data-category="Reconciliation" data-subtype="DIRECT_MANUAL_EXECUTION">
+                <td>46</td>
+                <td>
+                    <strong>GitLab</strong><br/>
+                    <span class="muted">Sales Development</span>
+                </td>
+                <td>
+                    <a href="https://job-boards.greenhouse.io/gitlab/jobs/8919962002" target="_blank" rel="noopener noreferrer">
+                        Senior Executive Assistant
+                    </a><br/>
+                    <span class="muted">Remote, United States</span>
+                </td>
+                <td>
+                    <span class="badge badge-cat">Reconciliation</span><br/>
+                    <span class="badge badge-manual">Direct Manual Execution</span>
+                </td>
+                <td class="evidence-cell">"Prepare accurate monthly expense reports for both leaders, including receipt collection and reconciliation."</td>
+                <td class="date-cell">
+                    <div><strong>Published:</strong> 2026-10-29</div>
+                    <div><strong>Updated:</strong> 2026-11-06</div>
+                </td>
+                <td class="intent-cell">
+                    <div class="intent-warning">NO DIRECT BUYING INTENT: Hiring a human operator/analyst to execute this recurring process indicates the team currently addresses the workload via headcount rather than external software procurement.</div>
+                </td>
+            </tr>
+            
+            <tr data-category="Reconciliation" data-subtype="DIRECT_MANUAL_EXECUTION">
+                <td>47</td>
+                <td>
+                    <strong>Datadog</strong><br/>
+                    <span class="muted">Finance</span>
+                </td>
+                <td>
+                    <a href="https://careers.datadoghq.com/detail/8257324/?gh_jid=8257324" target="_blank" rel="noopener noreferrer">
+                        Accounts Payable Analyst
+                    </a><br/>
+                    <span class="muted">New York, New York, USA</span>
+                </td>
+                <td>
+                    <span class="badge badge-cat">Reconciliation</span><br/>
+                    <span class="badge badge-manual">Direct Manual Execution</span>
+                </td>
+                <td class="evidence-cell">"Research and resolve payment and invoice discrepancies, and reconcile vendor accounts to resolve variances"</td>
+                <td class="date-cell">
+                    <div><strong>Published:</strong> 2026-10-06</div>
+                    <div><strong>Updated:</strong> 2026-11-05</div>
+                </td>
+                <td class="intent-cell">
+                    <div class="intent-warning">NO DIRECT BUYING INTENT: Hiring a human operator/analyst to execute this recurring process indicates the team currently addresses the workload via headcount rather than external software procurement.</div>
+                </td>
+            </tr>
+            
+            <tr data-category="CRM Operations" data-subtype="DIRECT_MANUAL_EXECUTION">
+                <td>48</td>
+                <td>
+                    <strong>Datadog</strong><br/>
+                    <span class="muted">Commercial &amp; Mid-Market Sales Engineering</span>
+                </td>
+                <td>
+                    <a href="https://careers.datadoghq.com/detail/8130580/?gh_jid=8130580" target="_blank" rel="noopener noreferrer">
+                        Commercial &amp; Mid-Market Sales Engineer
+                    </a><br/>
+                    <span class="muted">Seoul, South Korea</span>
+                </td>
+                <td>
+                    <span class="badge badge-cat">CRM Operations</span><br/>
+                    <span class="badge badge-manual">Direct Manual Execution</span>
+                </td>
+                <td class="evidence-cell">"Maintain accurate notes and feedback in CRM regarding customer input both wins and losses"</td>
+                <td class="date-cell">
+                    <div><strong>Published:</strong> 2026-08-20</div>
+                    <div><strong>Updated:</strong> 2026-11-05</div>
+                </td>
+                <td class="intent-cell">
+                    <div class="intent-warning">NO DIRECT BUYING INTENT: Hiring a human operator/analyst to execute this recurring process indicates the team currently addresses the workload via headcount rather than external software procurement.</div>
+                </td>
+            </tr>
+            
+            <tr data-category="Reporting" data-subtype="INTERNAL_AUTOMATION_MANDATE">
+                <td>49</td>
+                <td>
+                    <strong>Datadog</strong><br/>
+                    <span class="muted">Finance</span>
+                </td>
+                <td>
+                    <a href="https://careers.datadoghq.com/detail/8267437/?gh_jid=8267437" target="_blank" rel="noopener noreferrer">
+                        FP&amp;A Analyst, Cloud Finance
+                    </a><br/>
+                    <span class="muted">New York, New York, USA</span>
+                </td>
+                <td>
+                    <span class="badge badge-cat">Reporting</span><br/>
+                    <span class="badge badge-auto">Internal Automation Mandate</span>
+                </td>
+                <td class="evidence-cell">"Work on ad hoc projects and process improvements, including identifying opportunities to automate recurring, manual steps in the close process."</td>
+                <td class="date-cell">
+                    <div><strong>Published:</strong> 2026-10-13</div>
+                    <div><strong>Updated:</strong> 2026-11-05</div>
+                </td>
+                <td class="intent-cell">
+                    <div class="intent-warning">NO DIRECT BUYING INTENT: While this confirms internal process pain, the company is actively hiring internal talent (and referencing internal AI/ERP tooling) to automate this workflow in-house.</div>
+                </td>
+            </tr>
+            
+            <tr data-category="Reconciliation" data-subtype="DIRECT_MANUAL_EXECUTION">
+                <td>50</td>
+                <td>
+                    <strong>Datadog</strong><br/>
+                    <span class="muted">Finance</span>
+                </td>
+                <td>
+                    <a href="https://careers.datadoghq.com/detail/8230620/?gh_jid=8230620" target="_blank" rel="noopener noreferrer">
+                        Manager, Accounts Payable
+                    </a><br/>
+                    <span class="muted">Boston, Massachusetts, USA; California, USA, Remote; Colorado, USA, Remote; Denver, Colorado, USA; Massachusetts, USA, Remote; New York, New York, USA; San Francisco, California, USA</span>
+                </td>
+                <td>
+                    <span class="badge badge-cat">Reconciliation</span><br/>
+                    <span class="badge badge-manual">Direct Manual Execution</span>
+                </td>
+                <td class="evidence-cell">"This role will manage individual contributors and may oversee team leads while ensuring invoices, payments, reconciliations, tax reporting, and employee expenses are processed accurately and on time."</td>
+                <td class="date-cell">
+                    <div><strong>Published:</strong> 2026-10-06</div>
+                    <div><strong>Updated:</strong> 2026-11-11</div>
+                </td>
+                <td class="intent-cell">
+                    <div class="intent-warning">NO DIRECT BUYING INTENT: Hiring a human operator/analyst to execute this recurring process indicates the team currently addresses the workload via headcount rather than external software procurement.</div>
+                </td>
+            </tr>
+            
+            <tr data-category="Reconciliation" data-subtype="DIRECT_MANUAL_EXECUTION">
+                <td>51</td>
+                <td>
+                    <strong>Datadog</strong><br/>
+                    <span class="muted">Finance</span>
+                </td>
+                <td>
+                    <a href="https://careers.datadoghq.com/detail/8230620/?gh_jid=8230620" target="_blank" rel="noopener noreferrer">
+                        Manager, Accounts Payable
+                    </a><br/>
+                    <span class="muted">Boston, Massachusetts, USA; California, USA, Remote; Colorado, USA, Remote; Denver, Colorado, USA; Massachusetts, USA, Remote; New York, New York, USA; San Francisco, California, USA</span>
+                </td>
+                <td>
+                    <span class="badge badge-cat">Reconciliation</span><br/>
+                    <span class="badge badge-manual">Direct Manual Execution</span>
+                </td>
+                <td class="evidence-cell">"Own balance sheet reconciliations, AP close activities, accrual support, aging reviews, and related reporting."</td>
+                <td class="date-cell">
+                    <div><strong>Published:</strong> 2026-10-06</div>
+                    <div><strong>Updated:</strong> 2026-11-11</div>
+                </td>
+                <td class="intent-cell">
+                    <div class="intent-warning">NO DIRECT BUYING INTENT: Hiring a human operator/analyst to execute this recurring process indicates the team currently addresses the workload via headcount rather than external software procurement.</div>
+                </td>
+            </tr>
+            
+            <tr data-category="Reconciliation" data-subtype="INTERNAL_AUTOMATION_MANDATE">
+                <td>52</td>
+                <td>
+                    <strong>Datadog</strong><br/>
+                    <span class="muted">Finance</span>
+                </td>
+                <td>
+                    <a href="https://careers.datadoghq.com/detail/8230620/?gh_jid=8230620" target="_blank" rel="noopener noreferrer">
+                        Manager, Accounts Payable
+                    </a><br/>
+                    <span class="muted">Boston, Massachusetts, USA; California, USA, Remote; Colorado, USA, Remote; Denver, Colorado, USA; Massachusetts, USA, Remote; New York, New York, USA; San Francisco, California, USA</span>
+                </td>
+                <td>
+                    <span class="badge badge-cat">Reconciliation</span><br/>
+                    <span class="badge badge-auto">Internal Automation Mandate</span>
+                </td>
+                <td class="evidence-cell">"Drive automation and AI initiatives related to invoice processing, matching, approvals, reconciliations, exception handling, and reporting."</td>
+                <td class="date-cell">
+                    <div><strong>Published:</strong> 2026-10-06</div>
+                    <div><strong>Updated:</strong> 2026-11-11</div>
+                </td>
+                <td class="intent-cell">
+                    <div class="intent-warning">NO DIRECT BUYING INTENT: While this confirms internal process pain, the company is actively hiring internal talent (and referencing internal AI/ERP tooling) to automate this workflow in-house.</div>
+                </td>
+            </tr>
+            
+            <tr data-category="Reconciliation" data-subtype="DIRECT_MANUAL_EXECUTION">
+                <td>53</td>
+                <td>
+                    <strong>Datadog</strong><br/>
+                    <span class="muted">Finance</span>
+                </td>
+                <td>
+                    <a href="https://careers.datadoghq.com/detail/8238132/?gh_jid=8238132" target="_blank" rel="noopener noreferrer">
+                        Manager, Revenue Accounting
+                    </a><br/>
+                    <span class="muted">New York, New York, USA</span>
+                </td>
+                <td>
+                    <span class="badge badge-cat">Reconciliation</span><br/>
+                    <span class="badge badge-manual">Direct Manual Execution</span>
+                </td>
+                <td class="evidence-cell">"Own the monthly revenue close, including review and approval of journal entries, balance sheet reconciliations, and supporting schedules prepared by the team."</td>
+                <td class="date-cell">
+                    <div><strong>Published:</strong> 2026-10-02</div>
+                    <div><strong>Updated:</strong> 2026-11-05</div>
+                </td>
+                <td class="intent-cell">
+                    <div class="intent-warning">NO DIRECT BUYING INTENT: Hiring a human operator/analyst to execute this recurring process indicates the team currently addresses the workload via headcount rather than external software procurement.</div>
+                </td>
+            </tr>
+            
+            <tr data-category="CRM Operations" data-subtype="DIRECT_MANUAL_EXECUTION">
+                <td>54</td>
+                <td>
+                    <strong>Datadog</strong><br/>
+                    <span class="muted">GTM Enablement</span>
+                </td>
+                <td>
+                    <a href="https://careers.datadoghq.com/detail/8148092/?gh_jid=8148092" target="_blank" rel="noopener noreferrer">
+                        Senior Enablement Program Manager, Sales Engineering
+                    </a><br/>
+                    <span class="muted">New York, New York, USA</span>
+                </td>
+                <td>
+                    <span class="badge badge-cat">CRM Operations</span><br/>
+                    <span class="badge badge-manual">Direct Manual Execution</span>
+                </td>
+                <td class="evidence-cell">"Design and implement comprehensive metrics frameworks to measure change adoption and program effectiveness; pull and analyze Salesforce and LMS data to track performance against KPIs; present findings to senior stakeholders and iterate for lasting impact."</td>
+                <td class="date-cell">
+                    <div><strong>Published:</strong> 2026-08-25</div>
+                    <div><strong>Updated:</strong> 2026-11-05</div>
+                </td>
+                <td class="intent-cell">
+                    <div class="intent-warning">NO DIRECT BUYING INTENT: Hiring a human operator/analyst to execute this recurring process indicates the team currently addresses the workload via headcount rather than external software procurement.</div>
+                </td>
+            </tr>
+            
+            <tr data-category="CRM Operations" data-subtype="DIRECT_MANUAL_EXECUTION">
+                <td>55</td>
+                <td>
+                    <strong>Datadog</strong><br/>
+                    <span class="muted">Enterprise Sales Engineering</span>
+                </td>
+                <td>
+                    <a href="https://careers.datadoghq.com/detail/8030214/?gh_jid=8030214" target="_blank" rel="noopener noreferrer">
+                        Senior Sales Engineer - Public Sector (UK)
+                    </a><br/>
+                    <span class="muted">London, United Kingdom</span>
+                </td>
+                <td>
+                    <span class="badge badge-cat">CRM Operations</span><br/>
+                    <span class="badge badge-manual">Direct Manual Execution</span> <span class="badge badge-dup" title="Identical bullet in multi-region posting">Regional Duplicate</span>
+                </td>
+                <td class="evidence-cell">"Maintain accurate notes and feedback in CRM regarding customer input both wins and losses"</td>
+                <td class="date-cell">
+                    <div><strong>Published:</strong> 2026-06-29</div>
+                    <div><strong>Updated:</strong> 2026-11-05</div>
+                </td>
+                <td class="intent-cell">
+                    <div class="intent-warning">NO DIRECT BUYING INTENT: Hiring a human operator/analyst to execute this recurring process indicates the team currently addresses the workload via headcount rather than external software procurement.</div>
+                </td>
+            </tr>
+            
+            <tr data-category="CRM Operations" data-subtype="DIRECT_MANUAL_EXECUTION">
+                <td>56</td>
+                <td>
+                    <strong>Gusto, Inc.</strong><br/>
+                    <span class="muted">Sales</span>
+                </td>
+                <td>
+                    <a href="https://job-boards.greenhouse.io/gusto/jobs/8092462" target="_blank" rel="noopener noreferrer">
+                        Expansion Account Executive
+                    </a><br/>
+                    <span class="muted">Atlanta, GA - Hybrid; Denver, CO - Hybrid</span>
+                </td>
+                <td>
+                    <span class="badge badge-cat">CRM Operations</span><br/>
+                    <span class="badge badge-manual">Direct Manual Execution</span>
+                </td>
+                <td class="evidence-cell">"Update Salesforce with detailed notes and collaborate with cross‑functional teams (Sales, Product, Marketing) to optimize messaging."</td>
+                <td class="date-cell">
+                    <div><strong>Published:</strong> 2026-08-04</div>
+                    <div><strong>Updated:</strong> 2026-11-12</div>
+                </td>
+                <td class="intent-cell">
+                    <div class="intent-warning">NO DIRECT BUYING INTENT: Hiring a human operator/analyst to execute this recurring process indicates the team currently addresses the workload via headcount rather than external software procurement.</div>
+                </td>
+            </tr>
+            
+            <tr data-category="CRM Operations" data-subtype="DIRECT_MANUAL_EXECUTION">
+                <td>57</td>
+                <td>
+                    <strong>Gusto, Inc.</strong><br/>
+                    <span class="muted">Sales</span>
+                </td>
+                <td>
+                    <a href="https://job-boards.greenhouse.io/gusto/jobs/8092462" target="_blank" rel="noopener noreferrer">
+                        Expansion Account Executive
+                    </a><br/>
+                    <span class="muted">Atlanta, GA - Hybrid; Denver, CO - Hybrid</span>
+                </td>
+                <td>
+                    <span class="badge badge-cat">CRM Operations</span><br/>
+                    <span class="badge badge-manual">Direct Manual Execution</span>
+                </td>
+                <td class="evidence-cell">"Update Salesforce with detailed call notes, track opportunities, and plan follow‑up actions."</td>
+                <td class="date-cell">
+                    <div><strong>Published:</strong> 2026-08-04</div>
+                    <div><strong>Updated:</strong> 2026-11-12</div>
+                </td>
+                <td class="intent-cell">
+                    <div class="intent-warning">NO DIRECT BUYING INTENT: Hiring a human operator/analyst to execute this recurring process indicates the team currently addresses the workload via headcount rather than external software procurement.</div>
+                </td>
+            </tr>
+            
+            <tr data-category="CRM Operations" data-subtype="DIRECT_MANUAL_EXECUTION">
+                <td>58</td>
+                <td>
+                    <strong>Gusto, Inc.</strong><br/>
+                    <span class="muted">Sales</span>
+                </td>
+                <td>
+                    <a href="https://job-boards.greenhouse.io/gusto/jobs/8374008" target="_blank" rel="noopener noreferrer">
+                        Expansion AE, Gusto Pro
+                    </a><br/>
+                    <span class="muted">Atlanta, GA - Hybrid; Denver, CO - Hybrid</span>
+                </td>
+                <td>
+                    <span class="badge badge-cat">CRM Operations</span><br/>
+                    <span class="badge badge-manual">Direct Manual Execution</span>
+                </td>
+                <td class="evidence-cell">"Keep CRM activity and pipeline current across your full book."</td>
+                <td class="date-cell">
+                    <div><strong>Published:</strong> 2026-11-12</div>
+                    <div><strong>Updated:</strong> 2026-11-12</div>
+                </td>
+                <td class="intent-cell">
+                    <div class="intent-warning">NO DIRECT BUYING INTENT: Hiring a human operator/analyst to execute this recurring process indicates the team currently addresses the workload via headcount rather than external software procurement.</div>
+                </td>
+            </tr>
+            
+            <tr data-category="CRM Operations" data-subtype="DIRECT_MANUAL_EXECUTION">
+                <td>59</td>
+                <td>
+                    <strong>Gusto, Inc.</strong><br/>
+                    <span class="muted">Sales</span>
+                </td>
+                <td>
+                    <a href="https://job-boards.greenhouse.io/gusto/jobs/8001931" target="_blank" rel="noopener noreferrer">
+                        Future Opportunities: Early Career Sales Talent
+                    </a><br/>
+                    <span class="muted">Atlanta, GA - Hybrid; Denver, CO - Hybrid; Phoenix, AZ - Hybrid</span>
+                </td>
+                <td>
+                    <span class="badge badge-cat">CRM Operations</span><br/>
+                    <span class="badge badge-manual">Direct Manual Execution</span>
+                </td>
+                <td class="evidence-cell">"Maintain accurate notes and pipeline details in Salesforce to ensure excellent follow-through."</td>
+                <td class="date-cell">
+                    <div><strong>Published:</strong> 2026-06-11</div>
+                    <div><strong>Updated:</strong> 2026-10-27</div>
+                </td>
+                <td class="intent-cell">
+                    <div class="intent-warning">NO DIRECT BUYING INTENT: Hiring a human operator/analyst to execute this recurring process indicates the team currently addresses the workload via headcount rather than external software procurement.</div>
+                </td>
+            </tr>
+            
+            <tr data-category="CRM Operations" data-subtype="DIRECT_MANUAL_EXECUTION">
+                <td>60</td>
+                <td>
+                    <strong>Gusto, Inc.</strong><br/>
+                    <span class="muted">Customer Experience</span>
+                </td>
+                <td>
+                    <a href="https://job-boards.greenhouse.io/gusto/jobs/7984008" target="_blank" rel="noopener noreferrer">
+                        Future Opportunities: Retirement Client Relationship Manager
+                    </a><br/>
+                    <span class="muted">Denver, CO - Hybrid; New York, NY - Hybrid</span>
+                </td>
+                <td>
+                    <span class="badge badge-cat">CRM Operations</span><br/>
+                    <span class="badge badge-manual">Direct Manual Execution</span>
+                </td>
+                <td class="evidence-cell">"Maintain accurate records : Keep client interaction logs and CRM data up to date to ensure consistency, support team KPIs, and enable data-driven decision-making"</td>
+                <td class="date-cell">
+                    <div><strong>Published:</strong> 2026-06-04</div>
+                    <div><strong>Updated:</strong> 2026-10-05</div>
+                </td>
+                <td class="intent-cell">
+                    <div class="intent-warning">NO DIRECT BUYING INTENT: Hiring a human operator/analyst to execute this recurring process indicates the team currently addresses the workload via headcount rather than external software procurement.</div>
+                </td>
+            </tr>
+            
+            <tr data-category="CRM Operations" data-subtype="DIRECT_MANUAL_EXECUTION">
+                <td>61</td>
+                <td>
+                    <strong>Gusto, Inc.</strong><br/>
+                    <span class="muted">Channel Partnerships</span>
+                </td>
+                <td>
+                    <a href="https://job-boards.greenhouse.io/gusto/jobs/8347750" target="_blank" rel="noopener noreferrer">
+                        Partner Manager, Franchise
+                    </a><br/>
+                    <span class="muted">Denver, CO - Hybrid</span>
+                </td>
+                <td>
+                    <span class="badge badge-cat">CRM Operations</span><br/>
+                    <span class="badge badge-manual">Direct Manual Execution</span>
+                </td>
+                <td class="evidence-cell">"Use Salesforce and our partner management tools to track pipeline, contacts, agreements, and results."</td>
+                <td class="date-cell">
+                    <div><strong>Published:</strong> 2026-11-06</div>
+                    <div><strong>Updated:</strong> 2026-11-09</div>
+                </td>
+                <td class="intent-cell">
+                    <div class="intent-warning">NO DIRECT BUYING INTENT: Hiring a human operator/analyst to execute this recurring process indicates the team currently addresses the workload via headcount rather than external software procurement.</div>
+                </td>
+            </tr>
+            
+            </tbody>
+        </table>
+    </div>
+
+    <div class="section">
+        <h2>4. Rejected Matches &amp; False-Positive Audit Log (Showing 71 Representative Real Rejections across All 803 Filtered Statements)</h2>
+        <p class="muted">
+            Naive keyword matching on job descriptions produces <strong>92.9% noise</strong>.
+            Below are real rejected statements demonstrating how ManualOps Radar separates general software skills,
+            English idioms ("excel in"), product marketing copy, and software engineering roles from genuine manual workflows.
+        </p>
+        <div class="controls">
+            <label for="rejFilter"><strong>Filter by Rejection Reason:</strong></label>
+            <select id="rejFilter" onchange="filterRejected()">
+                <option value="ALL">All Rejection Reasons</option>
+                <option value="GENERAL_SOFTWARE_SKILL">GENERAL_SOFTWARE_SKILL</option>
+                <option value="VERB_EXCEL_OR_IDIOM">VERB_EXCEL_OR_IDIOM</option>
+                <option value="PRODUCT_PITCH_OR_CUSTOMER_FEATURE">PRODUCT_PITCH_OR_CUSTOMER_FEATURE</option>
+                <option value="ENGINEERING_INFRA_OR_SYSTEMS_BUILD">ENGINEERING_INFRA_OR_SYSTEMS_BUILD</option>
+                <option value="GENERIC_MENTION_WITHOUT_MANUAL_WORKFLOW">GENERIC_MENTION_WITHOUT_MANUAL_WORKFLOW</option>
+            </select>
+        </div>
+        <table id="rejectedTable">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Company</th>
+                    <th>Posting Title &amp; URL</th>
+                    <th>Triggered Category</th>
+                    <th>Rejection Reason</th>
+                    <th>Exact Verbatim Statement</th>
+                    <th>Automated Filter Explanation</th>
+                    <th>Dates</th>
+                </tr>
+            </thead>
+            <tbody>
+                
+            <tr data-reason="GENERAL_SOFTWARE_SKILL">
+                <td>1</td>
+                <td><strong>Stripe</strong></td>
+                <td>
+                    <a href="https://stripe.com/jobs/search?gh_jid=8238731" target="_blank" rel="noopener noreferrer">
+                        Account Executive, AI Startups - Grower
+                    </a>
+                </td>
+                <td><span class="badge badge-cat">Spreadsheets</span></td>
+                <td><span class="badge badge-rej">GENERAL_SOFTWARE_SKILL</span></td>
+                <td class="evidence-cell">"Experience with Excel and SQL, or a willingness to learn"</td>
+                <td>Lists tool proficiency, familiarity, or prior experience (e.g., Excel, Salesforce, CRM, reporting skills) as a candidate qualification without describing a repetitive manual workflow.</td>
+                <td class="date-cell">
+                    <div>Pub: 2026-10-02</div>
+                    <div>Upd: 2026-10-29</div>
+                </td>
+            </tr>
+            
+            <tr data-reason="GENERAL_SOFTWARE_SKILL">
+                <td>2</td>
+                <td><strong>Stripe</strong></td>
+                <td>
+                    <a href="https://stripe.com/jobs/search?gh_jid=8352489" target="_blank" rel="noopener noreferrer">
+                        Account Executive, Commercial &amp; SMB (India)
+                    </a>
+                </td>
+                <td><span class="badge badge-cat">Spreadsheets</span></td>
+                <td><span class="badge badge-rej">GENERAL_SOFTWARE_SKILL</span></td>
+                <td class="evidence-cell">"Experience with spreadsheets, CRM analytics, SQL, or a demonstrated willingness to learn"</td>
+                <td>Lists tool proficiency, familiarity, or prior experience (e.g., Excel, Salesforce, CRM, reporting skills) as a candidate qualification without describing a repetitive manual workflow.</td>
+                <td class="date-cell">
+                    <div>Pub: 2026-11-10</div>
+                    <div>Upd: 2026-11-12</div>
+                </td>
+            </tr>
+            
+            <tr data-reason="GENERAL_SOFTWARE_SKILL">
+                <td>3</td>
+                <td><strong>Stripe</strong></td>
+                <td>
+                    <a href="https://stripe.com/jobs/search?gh_jid=8348835" target="_blank" rel="noopener noreferrer">
+                        Account Executive Enterprise (Korean-speaking, Singapore based)
+                    </a>
+                </td>
+                <td><span class="badge badge-cat">CRM Operations</span></td>
+                <td><span class="badge badge-rej">GENERAL_SOFTWARE_SKILL</span></td>
+                <td class="evidence-cell">"Strong command of pipeline management methodologies (e.g., MEDDIICC) and CRM discipline (Salesforce)"</td>
+                <td>Lists tool proficiency, familiarity, or prior experience (e.g., Excel, Salesforce, CRM, reporting skills) as a candidate qualification without describing a repetitive manual workflow.</td>
+                <td class="date-cell">
+                    <div>Pub: 2026-11-04</div>
+                    <div>Upd: 2026-11-04</div>
+                </td>
+            </tr>
+            
+            <tr data-reason="GENERAL_SOFTWARE_SKILL">
+                <td>4</td>
+                <td><strong>Stripe</strong></td>
+                <td>
+                    <a href="https://stripe.com/jobs/search?gh_jid=8348835" target="_blank" rel="noopener noreferrer">
+                        Account Executive Enterprise (Korean-speaking, Singapore based)
+                    </a>
+                </td>
+                <td><span class="badge badge-cat">Spreadsheets</span></td>
+                <td><span class="badge badge-rej">GENERAL_SOFTWARE_SKILL</span></td>
+                <td class="evidence-cell">"Experience with Excel, SQL, or data tools for territory analysis and pipeline management"</td>
+                <td>Lists tool proficiency, familiarity, or prior experience (e.g., Excel, Salesforce, CRM, reporting skills) as a candidate qualification without describing a repetitive manual workflow.</td>
+                <td class="date-cell">
+                    <div>Pub: 2026-11-04</div>
+                    <div>Upd: 2026-11-04</div>
+                </td>
+            </tr>
+            
+            <tr data-reason="GENERAL_SOFTWARE_SKILL">
+                <td>5</td>
+                <td><strong>Stripe</strong></td>
+                <td>
+                    <a href="https://stripe.com/jobs/search?gh_jid=8144196" target="_blank" rel="noopener noreferrer">
+                        AI Engineer
+                    </a>
+                </td>
+                <td><span class="badge badge-cat">CRM Operations</span></td>
+                <td><span class="badge badge-rej">GENERAL_SOFTWARE_SKILL</span></td>
+                <td class="evidence-cell">"Experience integrating with third-party platforms (Salesforce, Gong, etc.)"</td>
+                <td>Lists tool proficiency, familiarity, or prior experience (e.g., Excel, Salesforce, CRM, reporting skills) as a candidate qualification without describing a repetitive manual workflow.</td>
+                <td class="date-cell">
+                    <div>Pub: 2026-10-07</div>
+                    <div>Upd: 2026-11-02</div>
+                </td>
+            </tr>
+            
+            <tr data-reason="GENERAL_SOFTWARE_SKILL">
+                <td>6</td>
+                <td><strong>Stripe</strong></td>
+                <td>
+                    <a href="https://stripe.com/jobs/search?gh_jid=8221776" target="_blank" rel="noopener noreferrer">
+                        AI Solutions Program Manager, Finance
+                    </a>
+                </td>
+                <td><span class="badge badge-cat">Reconciliation</span></td>
+                <td><span class="badge badge-rej">GENERAL_SOFTWARE_SKILL</span></td>
+                <td class="evidence-cell">"Experience navigating financial systems and understanding how data flows through accounting, reporting, reconciliation, forecasting, or payments processes."</td>
+                <td>Lists tool proficiency, familiarity, or prior experience (e.g., Excel, Salesforce, CRM, reporting skills) as a candidate qualification without describing a repetitive manual workflow.</td>
+                <td class="date-cell">
+                    <div>Pub: 2026-09-21</div>
+                    <div>Upd: 2026-10-29</div>
+                </td>
+            </tr>
+            
+            <tr data-reason="GENERAL_SOFTWARE_SKILL">
+                <td>7</td>
+                <td><strong>Stripe</strong></td>
+                <td>
+                    <a href="https://stripe.com/jobs/search?gh_jid=8354566" target="_blank" rel="noopener noreferrer">
+                        AMER Data Analyst - Sales Strategy and Operations
+                    </a>
+                </td>
+                <td><span class="badge badge-cat">CRM Operations</span></td>
+                <td><span class="badge badge-rej">GENERAL_SOFTWARE_SKILL</span></td>
+                <td class="evidence-cell">"Experience in Salesforce (or other CRM)."</td>
+                <td>Lists tool proficiency, familiarity, or prior experience (e.g., Excel, Salesforce, CRM, reporting skills) as a candidate qualification without describing a repetitive manual workflow.</td>
+                <td class="date-cell">
+                    <div>Pub: 2026-11-05</div>
+                    <div>Upd: 2026-11-05</div>
+                </td>
+            </tr>
+            
+            <tr data-reason="GENERAL_SOFTWARE_SKILL">
+                <td>8</td>
+                <td><strong>Stripe</strong></td>
+                <td>
+                    <a href="https://stripe.com/jobs/search?gh_jid=8354566" target="_blank" rel="noopener noreferrer">
+                        AMER Data Analyst - Sales Strategy and Operations
+                    </a>
+                </td>
+                <td><span class="badge badge-cat">Spreadsheets</span></td>
+                <td><span class="badge badge-rej">GENERAL_SOFTWARE_SKILL</span></td>
+                <td class="evidence-cell">"Intermediate to advanced SQL and strong Google Sheets or Excel modeling skills."</td>
+                <td>Lists tool proficiency, familiarity, or prior experience (e.g., Excel, Salesforce, CRM, reporting skills) as a candidate qualification without describing a repetitive manual workflow.</td>
+                <td class="date-cell">
+                    <div>Pub: 2026-11-05</div>
+                    <div>Upd: 2026-11-05</div>
+                </td>
+            </tr>
+            
+            <tr data-reason="GENERAL_SOFTWARE_SKILL">
+                <td>9</td>
+                <td><strong>Stripe</strong></td>
+                <td>
+                    <a href="https://stripe.com/jobs/search?gh_jid=8247127" target="_blank" rel="noopener noreferrer">
+                        AR Analyst
+                    </a>
+                </td>
+                <td><span class="badge badge-cat">CRM Operations</span></td>
+                <td><span class="badge badge-rej">GENERAL_SOFTWARE_SKILL</span></td>
+                <td class="evidence-cell">"Strong knowledge of gSuite tools, Salesforce and MS-Office products and experience working with/analyzing contracts and large data sets."</td>
+                <td>Lists tool proficiency, familiarity, or prior experience (e.g., Excel, Salesforce, CRM, reporting skills) as a candidate qualification without describing a repetitive manual workflow.</td>
+                <td class="date-cell">
+                    <div>Pub: 2026-10-09</div>
+                    <div>Upd: 2026-10-29</div>
+                </td>
+            </tr>
+            
+            <tr data-reason="GENERAL_SOFTWARE_SKILL">
+                <td>10</td>
+                <td><strong>Stripe</strong></td>
+                <td>
+                    <a href="https://stripe.com/jobs/search?gh_jid=8262032" target="_blank" rel="noopener noreferrer">
+                        Bridge Product Accountant
+                    </a>
+                </td>
+                <td><span class="badge badge-cat">Reporting</span></td>
+                <td><span class="badge badge-rej">GENERAL_SOFTWARE_SKILL</span></td>
+                <td class="evidence-cell">"Experience with monthly or quarterly close processes, journal-entry preparation and posting, audits, regulatory reporting, financial-statement preparation, and accounting systems"</td>
+                <td>Lists tool proficiency, familiarity, or prior experience (e.g., Excel, Salesforce, CRM, reporting skills) as a candidate qualification without describing a repetitive manual workflow.</td>
+                <td class="date-cell">
+                    <div>Pub: 2026-10-09</div>
+                    <div>Upd: 2026-10-29</div>
+                </td>
+            </tr>
+            
+            <tr data-reason="GENERAL_SOFTWARE_SKILL">
+                <td>11</td>
+                <td><strong>Stripe</strong></td>
+                <td>
+                    <a href="https://stripe.com/jobs/search?gh_jid=8336062" target="_blank" rel="noopener noreferrer">
+                        Deal Strategist, APAC
+                    </a>
+                </td>
+                <td><span class="badge badge-cat">CRM Operations</span></td>
+                <td><span class="badge badge-rej">GENERAL_SOFTWARE_SKILL</span></td>
+                <td class="evidence-cell">"Experience in Salesforce and Ironclad."</td>
+                <td>Lists tool proficiency, familiarity, or prior experience (e.g., Excel, Salesforce, CRM, reporting skills) as a candidate qualification without describing a repetitive manual workflow.</td>
+                <td class="date-cell">
+                    <div>Pub: 2026-11-01</div>
+                    <div>Upd: 2026-11-01</div>
+                </td>
+            </tr>
+            
+            <tr data-reason="GENERAL_SOFTWARE_SKILL">
+                <td>12</td>
+                <td><strong>Stripe</strong></td>
+                <td>
+                    <a href="https://stripe.com/jobs/search?gh_jid=8332888" target="_blank" rel="noopener noreferrer">
+                        Events Lead, Product &amp; Financial Services
+                    </a>
+                </td>
+                <td><span class="badge badge-cat">CRM Operations</span></td>
+                <td><span class="badge badge-rej">GENERAL_SOFTWARE_SKILL</span></td>
+                <td class="evidence-cell">"Proficiency with Salesforce and event-management platforms such as Splash, Cvent, or comparable tools."</td>
+                <td>Lists tool proficiency, familiarity, or prior experience (e.g., Excel, Salesforce, CRM, reporting skills) as a candidate qualification without describing a repetitive manual workflow.</td>
+                <td class="date-cell">
+                    <div>Pub: 2026-11-05</div>
+                    <div>Upd: 2026-11-05</div>
+                </td>
+            </tr>
+            
+            <tr data-reason="GENERAL_SOFTWARE_SKILL">
+                <td>13</td>
+                <td><strong>Stripe</strong></td>
+                <td>
+                    <a href="https://stripe.com/jobs/search?gh_jid=8222212" target="_blank" rel="noopener noreferrer">
+                        Events Manager, Event Technology and Registration
+                    </a>
+                </td>
+                <td><span class="badge badge-cat">CRM Operations</span></td>
+                <td><span class="badge badge-rej">GENERAL_SOFTWARE_SKILL</span></td>
+                <td class="evidence-cell">"Experience using Slack, Salesforce, Marketo, Google drive, Figma, and Asana."</td>
+                <td>Lists tool proficiency, familiarity, or prior experience (e.g., Excel, Salesforce, CRM, reporting skills) as a candidate qualification without describing a repetitive manual workflow.</td>
+                <td class="date-cell">
+                    <div>Pub: 2026-10-02</div>
+                    <div>Upd: 2026-10-29</div>
+                </td>
+            </tr>
+            
+            <tr data-reason="GENERAL_SOFTWARE_SKILL">
+                <td>14</td>
+                <td><strong>Stripe</strong></td>
+                <td>
+                    <a href="https://stripe.com/jobs/search?gh_jid=7473983" target="_blank" rel="noopener noreferrer">
+                        Finance and Strategy Partner
+                    </a>
+                </td>
+                <td><span class="badge badge-cat">CRM Operations</span></td>
+                <td><span class="badge badge-rej">GENERAL_SOFTWARE_SKILL</span></td>
+                <td class="evidence-cell">"Proficiency in SQL and experience working with and analyzing large data sets, as well as strong working knowledge of GSuite, Salesforce, and MS-Office products"</td>
+                <td>Lists tool proficiency, familiarity, or prior experience (e.g., Excel, Salesforce, CRM, reporting skills) as a candidate qualification without describing a repetitive manual workflow.</td>
+                <td class="date-cell">
+                    <div>Pub: 2025-12-16</div>
+                    <div>Upd: 2026-10-29</div>
+                </td>
+            </tr>
+            
+            <tr data-reason="GENERAL_SOFTWARE_SKILL">
+                <td>15</td>
+                <td><strong>Stripe</strong></td>
+                <td>
+                    <a href="https://stripe.com/jobs/search?gh_jid=8318680" target="_blank" rel="noopener noreferrer">
+                        Financial Services Transfer Pricing Strategist
+                    </a>
+                </td>
+                <td><span class="badge badge-cat">Spreadsheets</span></td>
+                <td><span class="badge badge-rej">GENERAL_SOFTWARE_SKILL</span></td>
+                <td class="evidence-cell">"Knowledge of financial accounting concepts, including accounting for intercompany transactions; professional experience with Excel, Oracle, and Smart View; and enjoyment of working with and digging into data from multiple sources"</td>
+                <td>Lists tool proficiency, familiarity, or prior experience (e.g., Excel, Salesforce, CRM, reporting skills) as a candidate qualification without describing a repetitive manual workflow.</td>
+                <td class="date-cell">
+                    <div>Pub: 2026-11-04</div>
+                    <div>Upd: 2026-11-04</div>
+                </td>
+            </tr>
+            
+            <tr data-reason="GENERAL_SOFTWARE_SKILL">
+                <td>16</td>
+                <td><strong>Stripe</strong></td>
+                <td>
+                    <a href="https://stripe.com/jobs/search?gh_jid=7747640" target="_blank" rel="noopener noreferrer">
+                        Forward Deployed AI Accelerator, Marketing
+                    </a>
+                </td>
+                <td><span class="badge badge-cat">CRM Operations</span></td>
+                <td><span class="badge badge-rej">GENERAL_SOFTWARE_SKILL</span></td>
+                <td class="evidence-cell">"Experience in marketing, marketing operations, growth, or a closely adjacent function, including familiarity with marketing technology stacks (e.g., Marketo, Salesforce, analytics platforms, content management tools)"</td>
+                <td>Lists tool proficiency, familiarity, or prior experience (e.g., Excel, Salesforce, CRM, reporting skills) as a candidate qualification without describing a repetitive manual workflow.</td>
+                <td class="date-cell">
+                    <div>Pub: 2026-03-26</div>
+                    <div>Upd: 2026-11-03</div>
+                </td>
+            </tr>
+            
+            <tr data-reason="VERB_EXCEL_OR_IDIOM">
+                <td>17</td>
+                <td><strong>Stripe</strong></td>
+                <td>
+                    <a href="https://stripe.com/jobs/search?gh_jid=8215824" target="_blank" rel="noopener noreferrer">
+                        Account Executive - Bridge
+                    </a>
+                </td>
+                <td><span class="badge badge-cat">Spreadsheets</span></td>
+                <td><span class="badge badge-rej">VERB_EXCEL_OR_IDIOM</span></td>
+                <td class="evidence-cell">"Experience with CRM tools, Excel, and basic SQL or a demonstrated comfort with data tools and analysis."</td>
+                <td>Uses the word &#x27;excel&#x27; as an English verb (e.g., &#x27;excel in a fast-paced environment&#x27;) rather than referring to Microsoft Excel or spreadsheets.</td>
+                <td class="date-cell">
+                    <div>Pub: 2026-10-15</div>
+                    <div>Upd: 2026-10-29</div>
+                </td>
+            </tr>
+            
+            <tr data-reason="VERB_EXCEL_OR_IDIOM">
+                <td>18</td>
+                <td><strong>Stripe</strong></td>
+                <td>
+                    <a href="https://stripe.com/jobs/search?gh_jid=8221776" target="_blank" rel="noopener noreferrer">
+                        AI Solutions Program Manager, Finance
+                    </a>
+                </td>
+                <td><span class="badge badge-cat">Reporting</span></td>
+                <td><span class="badge badge-rej">VERB_EXCEL_OR_IDIOM</span></td>
+                <td class="evidence-cell">"You&#x27;ll be joining the Finance Operational Excellence team, reporting to the Head of Finance Operational Excellence."</td>
+                <td>Refers to organizational hierarchy (&#x27;Reporting to...&#x27;) rather than operational report preparation.</td>
+                <td class="date-cell">
+                    <div>Pub: 2026-09-21</div>
+                    <div>Upd: 2026-10-29</div>
+                </td>
+            </tr>
+            
+            <tr data-reason="VERB_EXCEL_OR_IDIOM">
+                <td>19</td>
+                <td><strong>Stripe</strong></td>
+                <td>
+                    <a href="https://stripe.com/jobs/search?gh_jid=8376775" target="_blank" rel="noopener noreferrer">
+                        Analyst Relations Senior Manager
+                    </a>
+                </td>
+                <td><span class="badge badge-cat">Reporting</span></td>
+                <td><span class="badge badge-rej">VERB_EXCEL_OR_IDIOM</span></td>
+                <td class="evidence-cell">"Reporting to the Head of Analyst Relations, you’ll build trusted analyst relationships, lead evaluations and research engagements, and develop clear, engaging, evidence-backed narratives about Stripe’s products and strategy."</td>
+                <td>Refers to organizational hierarchy (&#x27;Reporting to...&#x27;) rather than operational report preparation.</td>
+                <td class="date-cell">
+                    <div>Pub: 2026-11-12</div>
+                    <div>Upd: 2026-11-12</div>
+                </td>
+            </tr>
+            
+            <tr data-reason="VERB_EXCEL_OR_IDIOM">
+                <td>20</td>
+                <td><strong>Stripe</strong></td>
+                <td>
+                    <a href="https://stripe.com/jobs/search?gh_jid=7967890" target="_blank" rel="noopener noreferrer">
+                        Consumer Operations Associate
+                    </a>
+                </td>
+                <td><span class="badge badge-cat">Spreadsheets</span></td>
+                <td><span class="badge badge-rej">VERB_EXCEL_OR_IDIOM</span></td>
+                <td class="evidence-cell">"You excel in critical thinking and problem solving"</td>
+                <td>Uses the word &#x27;excel&#x27; as an English verb (e.g., &#x27;excel in a fast-paced environment&#x27;) rather than referring to Microsoft Excel or spreadsheets.</td>
+                <td class="date-cell">
+                    <div>Pub: 2026-07-22</div>
+                    <div>Upd: 2026-10-29</div>
+                </td>
+            </tr>
+            
+            <tr data-reason="VERB_EXCEL_OR_IDIOM">
+                <td>21</td>
+                <td><strong>Stripe</strong></td>
+                <td>
+                    <a href="https://stripe.com/jobs/search?gh_jid=7456167" target="_blank" rel="noopener noreferrer">
+                        Credit Risk Operations Analyst (CDMX)
+                    </a>
+                </td>
+                <td><span class="badge badge-cat">Spreadsheets</span></td>
+                <td><span class="badge badge-rej">VERB_EXCEL_OR_IDIOM</span></td>
+                <td class="evidence-cell">"You excel in diagnostic thinking and problem-solving"</td>
+                <td>Uses the word &#x27;excel&#x27; as an English verb (e.g., &#x27;excel in a fast-paced environment&#x27;) rather than referring to Microsoft Excel or spreadsheets.</td>
+                <td class="date-cell">
+                    <div>Pub: 2026-02-27</div>
+                    <div>Upd: 2026-10-29</div>
+                </td>
+            </tr>
+            
+            <tr data-reason="VERB_EXCEL_OR_IDIOM">
+                <td>22</td>
+                <td><strong>Stripe</strong></td>
+                <td>
+                    <a href="https://stripe.com/jobs/search?gh_jid=8104748" target="_blank" rel="noopener noreferrer">
+                        Credit Risk Operations Associate
+                    </a>
+                </td>
+                <td><span class="badge badge-cat">Spreadsheets</span></td>
+                <td><span class="badge badge-rej">VERB_EXCEL_OR_IDIOM</span></td>
+                <td class="evidence-cell">"You excel in analytical thinking and problem solving"</td>
+                <td>Uses the word &#x27;excel&#x27; as an English verb (e.g., &#x27;excel in a fast-paced environment&#x27;) rather than referring to Microsoft Excel or spreadsheets.</td>
+                <td class="date-cell">
+                    <div>Pub: 2026-08-07</div>
+                    <div>Upd: 2026-10-29</div>
+                </td>
+            </tr>
+            
+            <tr data-reason="VERB_EXCEL_OR_IDIOM">
+                <td>23</td>
+                <td><strong>Stripe</strong></td>
+                <td>
+                    <a href="https://stripe.com/jobs/search?gh_jid=8203216" target="_blank" rel="noopener noreferrer">
+                        Editorial Director, Brand &amp; Creative Partnerships
+                    </a>
+                </td>
+                <td><span class="badge badge-cat">Reporting</span></td>
+                <td><span class="badge badge-rej">VERB_EXCEL_OR_IDIOM</span></td>
+                <td class="evidence-cell">"This is a senior individual contributor role reporting to the leader of Stripe’s Narrative &amp; Editorial team."</td>
+                <td>Refers to organizational hierarchy (&#x27;Reporting to...&#x27;) rather than operational report preparation.</td>
+                <td class="date-cell">
+                    <div>Pub: 2026-09-22</div>
+                    <div>Upd: 2026-10-29</div>
+                </td>
+            </tr>
+            
+            <tr data-reason="VERB_EXCEL_OR_IDIOM">
+                <td>24</td>
+                <td><strong>Stripe</strong></td>
+                <td>
+                    <a href="https://stripe.com/jobs/search?gh_jid=8180536" target="_blank" rel="noopener noreferrer">
+                        Engineering Manager, Billing Products
+                    </a>
+                </td>
+                <td><span class="badge badge-cat">Spreadsheets</span></td>
+                <td><span class="badge badge-rej">VERB_EXCEL_OR_IDIOM</span></td>
+                <td class="evidence-cell">"You will excel in this role if you’re a product-focused engineering manager who can collaborate effectively across multiple teams and functions to deliver results."</td>
+                <td>Uses the word &#x27;excel&#x27; as an English verb (e.g., &#x27;excel in a fast-paced environment&#x27;) rather than referring to Microsoft Excel or spreadsheets.</td>
+                <td class="date-cell">
+                    <div>Pub: 2026-09-08</div>
+                    <div>Upd: 2026-10-29</div>
+                </td>
+            </tr>
+            
+            <tr data-reason="VERB_EXCEL_OR_IDIOM">
+                <td>25</td>
+                <td><strong>Stripe</strong></td>
+                <td>
+                    <a href="https://stripe.com/jobs/search?gh_jid=8240148" target="_blank" rel="noopener noreferrer">
+                        Equity and Reporting Accounting
+                    </a>
+                </td>
+                <td><span class="badge badge-cat">Spreadsheets</span></td>
+                <td><span class="badge badge-rej">VERB_EXCEL_OR_IDIOM</span></td>
+                <td class="evidence-cell">"Strong knowledge of Excel"</td>
+                <td>Uses the word &#x27;excel&#x27; as an English verb (e.g., &#x27;excel in a fast-paced environment&#x27;) rather than referring to Microsoft Excel or spreadsheets.</td>
+                <td class="date-cell">
+                    <div>Pub: 2026-09-30</div>
+                    <div>Upd: 2026-11-11</div>
+                </td>
+            </tr>
+            
+            <tr data-reason="VERB_EXCEL_OR_IDIOM">
+                <td>26</td>
+                <td><strong>Stripe</strong></td>
+                <td>
+                    <a href="https://stripe.com/jobs/search?gh_jid=8222212" target="_blank" rel="noopener noreferrer">
+                        Events Manager, Event Technology and Registration
+                    </a>
+                </td>
+                <td><span class="badge badge-cat">Reporting</span></td>
+                <td><span class="badge badge-rej">VERB_EXCEL_OR_IDIOM</span></td>
+                <td class="evidence-cell">"Reporting to the Stripe Sessions event lead, this position requires you to work autonomously and present well-prepared recommendations."</td>
+                <td>Refers to organizational hierarchy (&#x27;Reporting to...&#x27;) rather than operational report preparation.</td>
+                <td class="date-cell">
+                    <div>Pub: 2026-10-02</div>
+                    <div>Upd: 2026-10-29</div>
+                </td>
+            </tr>
+            
+            <tr data-reason="VERB_EXCEL_OR_IDIOM">
+                <td>27</td>
+                <td><strong>Stripe</strong></td>
+                <td>
+                    <a href="https://stripe.com/jobs/search?gh_jid=8220932" target="_blank" rel="noopener noreferrer">
+                        Financial Crimes Investigator, Luxembourg
+                    </a>
+                </td>
+                <td><span class="badge badge-cat">Spreadsheets</span></td>
+                <td><span class="badge badge-rej">VERB_EXCEL_OR_IDIOM</span></td>
+                <td class="evidence-cell">"The ability to synthesise large amounts of information, including transaction data, using tools such as SQL, Excel, and AI"</td>
+                <td>Uses the word &#x27;excel&#x27; as an English verb (e.g., &#x27;excel in a fast-paced environment&#x27;) rather than referring to Microsoft Excel or spreadsheets.</td>
+                <td class="date-cell">
+                    <div>Pub: 2026-10-12</div>
+                    <div>Upd: 2026-10-29</div>
+                </td>
+            </tr>
+            
+            <tr data-reason="VERB_EXCEL_OR_IDIOM">
+                <td>28</td>
+                <td><strong>Stripe</strong></td>
+                <td>
+                    <a href="https://stripe.com/jobs/search?gh_jid=7230452" target="_blank" rel="noopener noreferrer">
+                        Forward Deployed Engineer, Privy
+                    </a>
+                </td>
+                <td><span class="badge badge-cat">Spreadsheets</span></td>
+                <td><span class="badge badge-rej">VERB_EXCEL_OR_IDIOM</span></td>
+                <td class="evidence-cell">"Excel at rapid prototyping while maintaining appropriate quality standards"</td>
+                <td>Uses the word &#x27;excel&#x27; as an English verb (e.g., &#x27;excel in a fast-paced environment&#x27;) rather than referring to Microsoft Excel or spreadsheets.</td>
+                <td class="date-cell">
+                    <div>Pub: 2025-09-08</div>
+                    <div>Upd: 2026-11-03</div>
+                </td>
+            </tr>
+            
+            <tr data-reason="VERB_EXCEL_OR_IDIOM">
+                <td>29</td>
+                <td><strong>Stripe</strong></td>
+                <td>
+                    <a href="https://stripe.com/jobs/search?gh_jid=8299649" target="_blank" rel="noopener noreferrer">
+                        Head of AI Startups, EMEA
+                    </a>
+                </td>
+                <td><span class="badge badge-cat">Reporting</span></td>
+                <td><span class="badge badge-rej">VERB_EXCEL_OR_IDIOM</span></td>
+                <td class="evidence-cell">"Reporting to the Regional Sales Lead for Startups, you will lead a team of Account Executives responsible for expanding Stripe&#x27;s relationship with some of the most important European AI companies in the world—across payments, billing, and beyond."</td>
+                <td>Refers to organizational hierarchy (&#x27;Reporting to...&#x27;) rather than operational report preparation.</td>
+                <td class="date-cell">
+                    <div>Pub: 2026-10-23</div>
+                    <div>Upd: 2026-10-29</div>
+                </td>
+            </tr>
+            
+            <tr data-reason="VERB_EXCEL_OR_IDIOM">
+                <td>30</td>
+                <td><strong>Stripe</strong></td>
+                <td>
+                    <a href="https://stripe.com/jobs/search?gh_jid=7950828" target="_blank" rel="noopener noreferrer">
+                        Head of Finance Operations
+                    </a>
+                </td>
+                <td><span class="badge badge-cat">Reconciliation</span></td>
+                <td><span class="badge badge-rej">VERB_EXCEL_OR_IDIOM</span></td>
+                <td class="evidence-cell">"Exceptional written and verbal communication; comfortable presenting to senior leadership and reconciling multiple stakeholder perspectives in writing"</td>
+                <td>Uses &#x27;reconcile&#x27; figuratively (reconciling stakeholder viewpoints or ambiguity) rather than financial or data reconciliation.</td>
+                <td class="date-cell">
+                    <div>Pub: 2026-06-04</div>
+                    <div>Upd: 2026-10-29</div>
+                </td>
+            </tr>
+            
+            <tr data-reason="VERB_EXCEL_OR_IDIOM">
+                <td>31</td>
+                <td><strong>Stripe</strong></td>
+                <td>
+                    <a href="https://stripe.com/jobs/search?gh_jid=6209187" target="_blank" rel="noopener noreferrer">
+                        Legal Entity Controller
+                    </a>
+                </td>
+                <td><span class="badge badge-cat">Spreadsheets</span></td>
+                <td><span class="badge badge-rej">VERB_EXCEL_OR_IDIOM</span></td>
+                <td class="evidence-cell">"Strong technical and problem-solving skills, advanced Excel ability, and experience with financial systems (e.g., Oracle, Workiva, Blackline, or similar)."</td>
+                <td>Uses the word &#x27;excel&#x27; as an English verb (e.g., &#x27;excel in a fast-paced environment&#x27;) rather than referring to Microsoft Excel or spreadsheets.</td>
+                <td class="date-cell">
+                    <div>Pub: 2024-10-15</div>
+                    <div>Upd: 2026-11-03</div>
+                </td>
+            </tr>
+            
+            <tr data-reason="VERB_EXCEL_OR_IDIOM">
+                <td>32</td>
+                <td><strong>Stripe</strong></td>
+                <td>
+                    <a href="https://stripe.com/jobs/search?gh_jid=7703750" target="_blank" rel="noopener noreferrer">
+                        Manager - Legal Entity Controller
+                    </a>
+                </td>
+                <td><span class="badge badge-cat">Spreadsheets</span></td>
+                <td><span class="badge badge-rej">VERB_EXCEL_OR_IDIOM</span></td>
+                <td class="evidence-cell">"Strong knowledge of Excel and experience working with large data sets"</td>
+                <td>Uses the word &#x27;excel&#x27; as an English verb (e.g., &#x27;excel in a fast-paced environment&#x27;) rather than referring to Microsoft Excel or spreadsheets.</td>
+                <td class="date-cell">
+                    <div>Pub: 2026-03-25</div>
+                    <div>Upd: 2026-10-29</div>
+                </td>
+            </tr>
+            
+            <tr data-reason="PRODUCT_PITCH_OR_CUSTOMER_FEATURE">
+                <td>33</td>
+                <td><strong>Stripe</strong></td>
+                <td>
+                    <a href="https://stripe.com/jobs/search?gh_jid=8234252" target="_blank" rel="noopener noreferrer">
+                        Engineering Manager, Accounting Products
+                    </a>
+                </td>
+                <td><span class="badge badge-cat">Reconciliation</span></td>
+                <td><span class="badge badge-rej">PRODUCT_PITCH_OR_CUSTOMER_FEATURE</span></td>
+                <td class="evidence-cell">"Right now this includes products like Billing, Invoicing, Revenue Recognition, Reconciliation and the underlying platform for batch and real time processing of large scale financial data to power these solutions."</td>
+                <td>Describes the company&#x27;s commercial software product or customer pain points, not an internal manual workflow performed by this role.</td>
+                <td class="date-cell">
+                    <div>Pub: 2026-09-28</div>
+                    <div>Upd: 2026-10-29</div>
+                </td>
+            </tr>
+            
+            <tr data-reason="PRODUCT_PITCH_OR_CUSTOMER_FEATURE">
+                <td>34</td>
+                <td><strong>Stripe</strong></td>
+                <td>
+                    <a href="https://stripe.com/jobs/search?gh_jid=8231234" target="_blank" rel="noopener noreferrer">
+                        Product Manager, Foreign Exchange
+                    </a>
+                </td>
+                <td><span class="badge badge-cat">Reconciliation</span></td>
+                <td><span class="badge badge-rej">PRODUCT_PITCH_OR_CUSTOMER_FEATURE</span></td>
+                <td class="evidence-cell">"Finance teams must decide what to hold, when to convert, how to manage currency exposure, and how to reconcile the results."</td>
+                <td>Describes the company&#x27;s commercial software product or customer pain points, not an internal manual workflow performed by this role.</td>
+                <td class="date-cell">
+                    <div>Pub: 2026-10-09</div>
+                    <div>Upd: 2026-10-29</div>
+                </td>
+            </tr>
+            
+            <tr data-reason="PRODUCT_PITCH_OR_CUSTOMER_FEATURE">
+                <td>35</td>
+                <td><strong>Stripe</strong></td>
+                <td>
+                    <a href="https://stripe.com/jobs/search?gh_jid=8231234" target="_blank" rel="noopener noreferrer">
+                        Product Manager, Foreign Exchange
+                    </a>
+                </td>
+                <td><span class="badge badge-cat">Reconciliation</span></td>
+                <td><span class="badge badge-rej">PRODUCT_PITCH_OR_CUSTOMER_FEATURE</span></td>
+                <td class="evidence-cell">"Deeply understand how global businesses and platforms manage currencies, including holding, converting, forecasting, hedging, and reconciliation."</td>
+                <td>Describes the company&#x27;s commercial software product or customer pain points, not an internal manual workflow performed by this role.</td>
+                <td class="date-cell">
+                    <div>Pub: 2026-10-09</div>
+                    <div>Upd: 2026-10-29</div>
+                </td>
+            </tr>
+            
+            <tr data-reason="PRODUCT_PITCH_OR_CUSTOMER_FEATURE">
+                <td>36</td>
+                <td><strong>Stripe</strong></td>
+                <td>
+                    <a href="https://stripe.com/jobs/search?gh_jid=8338845" target="_blank" rel="noopener noreferrer">
+                        Solution Architect, Metronome (AI Native)
+                    </a>
+                </td>
+                <td><span class="badge badge-cat">Data Entry</span></td>
+                <td><span class="badge badge-rej">PRODUCT_PITCH_OR_CUSTOMER_FEATURE</span></td>
+                <td class="evidence-cell">"We save them days of development time and manual invoicing, enabling them to use their billing data to better serve their customers."</td>
+                <td>Describes the company&#x27;s commercial software product or customer pain points, not an internal manual workflow performed by this role.</td>
+                <td class="date-cell">
+                    <div>Pub: 2026-11-13</div>
+                    <div>Upd: 2026-11-13</div>
+                </td>
+            </tr>
+            
+            <tr data-reason="PRODUCT_PITCH_OR_CUSTOMER_FEATURE">
+                <td>37</td>
+                <td><strong>Stripe</strong></td>
+                <td>
+                    <a href="https://stripe.com/jobs/search?gh_jid=7737248" target="_blank" rel="noopener noreferrer">
+                        Technical Support Engineer (EMEA), Metronome
+                    </a>
+                </td>
+                <td><span class="badge badge-cat">Data Entry</span></td>
+                <td><span class="badge badge-rej">PRODUCT_PITCH_OR_CUSTOMER_FEATURE</span></td>
+                <td class="evidence-cell">"Our platform computes millions of invoices per billing period and is scaling rapidly to accommodate new customers, saving them hours of development time and manual invoicing and enabling them to use consumption data to better serve their customers."</td>
+                <td>Describes the company&#x27;s commercial software product or customer pain points, not an internal manual workflow performed by this role.</td>
+                <td class="date-cell">
+                    <div>Pub: 2026-09-01</div>
+                    <div>Upd: 2026-10-29</div>
+                </td>
+            </tr>
+            
+            <tr data-reason="PRODUCT_PITCH_OR_CUSTOMER_FEATURE">
+                <td>38</td>
+                <td><strong>Gusto, Inc.</strong></td>
+                <td>
+                    <a href="https://job-boards.greenhouse.io/gusto/jobs/8360497" target="_blank" rel="noopener noreferrer">
+                        Software Engineer,  Financial Data &amp; Payments
+                    </a>
+                </td>
+                <td><span class="badge badge-cat">Reconciliation</span></td>
+                <td><span class="badge badge-rej">PRODUCT_PITCH_OR_CUSTOMER_FEATURE</span></td>
+                <td class="evidence-cell">"We’re hiring seasoned engineers to join our teams that work on the financial backbone of Gusto&#x27;s money movement — the ledger, reconciliation, and reporting systems that account for every dollar, and the payment profile that determines how employers fund payroll and how employees and contractors get paid."</td>
+                <td>Describes the company&#x27;s commercial software product or customer pain points, not an internal manual workflow performed by this role.</td>
+                <td class="date-cell">
+                    <div>Pub: 2026-11-09</div>
+                    <div>Upd: 2026-11-09</div>
+                </td>
+            </tr>
+            
+            <tr data-reason="PRODUCT_PITCH_OR_CUSTOMER_FEATURE">
+                <td>39</td>
+                <td><strong>Gusto, Inc.</strong></td>
+                <td>
+                    <a href="https://job-boards.greenhouse.io/gusto/jobs/8360497" target="_blank" rel="noopener noreferrer">
+                        Software Engineer,  Financial Data &amp; Payments
+                    </a>
+                </td>
+                <td><span class="badge badge-cat">Reconciliation</span></td>
+                <td><span class="badge badge-rej">PRODUCT_PITCH_OR_CUSTOMER_FEATURE</span></td>
+                <td class="evidence-cell">"Financial Data is the system of record for the money itself: the ledger and subledger behind every payment, the reconciliation that proves our books agree with our banks and partners, the investigation of the variances that surface when they do not, and the financial reporting that Accounting, Finance, and Compliance depend on."</td>
+                <td>Describes the company&#x27;s commercial software product or customer pain points, not an internal manual workflow performed by this role.</td>
+                <td class="date-cell">
+                    <div>Pub: 2026-11-09</div>
+                    <div>Upd: 2026-11-09</div>
+                </td>
+            </tr>
+            
+            <tr data-reason="ENGINEERING_INFRA_OR_SYSTEMS_BUILD">
+                <td>40</td>
+                <td><strong>Stripe</strong></td>
+                <td>
+                    <a href="https://stripe.com/jobs/search?gh_jid=8118929" target="_blank" rel="noopener noreferrer">
+                        Full Stack Engineer, Enterprise &amp; Ecosystem
+                    </a>
+                </td>
+                <td><span class="badge badge-cat">CRM Operations</span></td>
+                <td><span class="badge badge-rej">ENGINEERING_INFRA_OR_SYSTEMS_BUILD</span></td>
+                <td class="evidence-cell">"This role is crucial to building and managing integrations with leading Ecommerce, CRM, and ERP systems to help our users activate faster and realize greater value from Stripe."</td>
+                <td>Describes software engineering, enterprise system integrations, or IT security/audit controls for an engineering/audit role (&#x27;Full Stack Engineer, Enterprise &amp; Ecosystem&#x27;) rather than repetitive manual business operations.</td>
+                <td class="date-cell">
+                    <div>Pub: 2026-08-17</div>
+                    <div>Upd: 2026-10-29</div>
+                </td>
+            </tr>
+            
+            <tr data-reason="ENGINEERING_INFRA_OR_SYSTEMS_BUILD">
+                <td>41</td>
+                <td><strong>Stripe</strong></td>
+                <td>
+                    <a href="https://stripe.com/jobs/search?gh_jid=8118929" target="_blank" rel="noopener noreferrer">
+                        Full Stack Engineer, Enterprise &amp; Ecosystem
+                    </a>
+                </td>
+                <td><span class="badge badge-cat">CRM Operations</span></td>
+                <td><span class="badge badge-rej">ENGINEERING_INFRA_OR_SYSTEMS_BUILD</span></td>
+                <td class="evidence-cell">"Developing and maintaining a set of connectors and integrations for partners like Shopify, and Salesforce."</td>
+                <td>Describes software engineering, enterprise system integrations, or IT security/audit controls for an engineering/audit role (&#x27;Full Stack Engineer, Enterprise &amp; Ecosystem&#x27;) rather than repetitive manual business operations.</td>
+                <td class="date-cell">
+                    <div>Pub: 2026-08-17</div>
+                    <div>Upd: 2026-10-29</div>
+                </td>
+            </tr>
+            
+            <tr data-reason="ENGINEERING_INFRA_OR_SYSTEMS_BUILD">
+                <td>42</td>
+                <td><strong>Stripe</strong></td>
+                <td>
+                    <a href="https://stripe.com/jobs/search?gh_jid=8118929" target="_blank" rel="noopener noreferrer">
+                        Full Stack Engineer, Enterprise &amp; Ecosystem
+                    </a>
+                </td>
+                <td><span class="badge badge-cat">CRM Operations</span></td>
+                <td><span class="badge badge-rej">ENGINEERING_INFRA_OR_SYSTEMS_BUILD</span></td>
+                <td class="evidence-cell">"Foundational understanding and ability to read the code/interfaces of partner systems (e.g., Salesforce, Oracle, Netsuite) to facilitate complex integrations."</td>
+                <td>Describes software engineering, enterprise system integrations, or IT security/audit controls for an engineering/audit role (&#x27;Full Stack Engineer, Enterprise &amp; Ecosystem&#x27;) rather than repetitive manual business operations.</td>
+                <td class="date-cell">
+                    <div>Pub: 2026-08-17</div>
+                    <div>Upd: 2026-10-29</div>
+                </td>
+            </tr>
+            
+            <tr data-reason="ENGINEERING_INFRA_OR_SYSTEMS_BUILD">
+                <td>43</td>
+                <td><strong>Stripe</strong></td>
+                <td>
+                    <a href="https://stripe.com/jobs/search?gh_jid=8118929" target="_blank" rel="noopener noreferrer">
+                        Full Stack Engineer, Enterprise &amp; Ecosystem
+                    </a>
+                </td>
+                <td><span class="badge badge-cat">CRM Operations</span></td>
+                <td><span class="badge badge-rej">ENGINEERING_INFRA_OR_SYSTEMS_BUILD</span></td>
+                <td class="evidence-cell">"Prior experience building connectors, or deep integrations with major Ecommerce, CRM, or ERP platforms."</td>
+                <td>Describes software engineering, enterprise system integrations, or IT security/audit controls for an engineering/audit role (&#x27;Full Stack Engineer, Enterprise &amp; Ecosystem&#x27;) rather than repetitive manual business operations.</td>
+                <td class="date-cell">
+                    <div>Pub: 2026-08-17</div>
+                    <div>Upd: 2026-10-29</div>
+                </td>
+            </tr>
+            
+            <tr data-reason="ENGINEERING_INFRA_OR_SYSTEMS_BUILD">
+                <td>44</td>
+                <td><strong>Stripe</strong></td>
+                <td>
+                    <a href="https://stripe.com/jobs/search?gh_jid=8282171" target="_blank" rel="noopener noreferrer">
+                        Integration Reliability Engineer, Technical Operations
+                    </a>
+                </td>
+                <td><span class="badge badge-cat">Reconciliation</span></td>
+                <td><span class="badge badge-rej">ENGINEERING_INFRA_OR_SYSTEMS_BUILD</span></td>
+                <td class="evidence-cell">"Build reconciliation and anomaly detection so that money moving through our partner integrations is correct, traceable, and accounted for, in collaboration with engineering, accounting, and partnerships."</td>
+                <td>Describes software engineering, enterprise system integrations, or IT security/audit controls for an engineering/audit role (&#x27;Integration Reliability Engineer, Technical Operations&#x27;) rather than repetitive manual business operations.</td>
+                <td class="date-cell">
+                    <div>Pub: 2026-11-12</div>
+                    <div>Upd: 2026-11-12</div>
+                </td>
+            </tr>
+            
+            <tr data-reason="ENGINEERING_INFRA_OR_SYSTEMS_BUILD">
+                <td>45</td>
+                <td><strong>Stripe</strong></td>
+                <td>
+                    <a href="https://stripe.com/jobs/search?gh_jid=8036233" target="_blank" rel="noopener noreferrer">
+                        Internal Auditor - APAC Regulatory &amp; Financial Operations
+                    </a>
+                </td>
+                <td><span class="badge badge-cat">Reporting</span></td>
+                <td><span class="badge badge-rej">ENGINEERING_INFRA_OR_SYSTEMS_BUILD</span></td>
+                <td class="evidence-cell">"Conduct evaluation and testing of governance, risk management, internal controls, compliance, financial reporting, and operational processes to ensure their effectiveness, accuracy, and regulatory compliance."</td>
+                <td>Describes software engineering, enterprise system integrations, or IT security/audit controls for an engineering/audit role (&#x27;Internal Auditor - APAC Regulatory &amp; Financial Operations&#x27;) rather than repetitive manual business operations.</td>
+                <td class="date-cell">
+                    <div>Pub: 2026-06-29</div>
+                    <div>Upd: 2026-10-29</div>
+                </td>
+            </tr>
+            
+            <tr data-reason="ENGINEERING_INFRA_OR_SYSTEMS_BUILD">
+                <td>46</td>
+                <td><strong>Stripe</strong></td>
+                <td>
+                    <a href="https://stripe.com/jobs/search?gh_jid=8205278" target="_blank" rel="noopener noreferrer">
+                        Internal Audit - Regulatory Lead, EMEA
+                    </a>
+                </td>
+                <td><span class="badge badge-cat">Reporting</span></td>
+                <td><span class="badge badge-rej">ENGINEERING_INFRA_OR_SYSTEMS_BUILD</span></td>
+                <td class="evidence-cell">"Oversee evaluation and testing of governance, risk management, internal controls, compliance, financial reporting, and operational processes to ensure their effectiveness, accuracy, and regulatory compliance."</td>
+                <td>Describes software engineering, enterprise system integrations, or IT security/audit controls for an engineering/audit role (&#x27;Internal Audit - Regulatory Lead, EMEA&#x27;) rather than repetitive manual business operations.</td>
+                <td class="date-cell">
+                    <div>Pub: 2026-09-15</div>
+                    <div>Upd: 2026-10-29</div>
+                </td>
+            </tr>
+            
+            <tr data-reason="ENGINEERING_INFRA_OR_SYSTEMS_BUILD">
+                <td>47</td>
+                <td><strong>Stripe</strong></td>
+                <td>
+                    <a href="https://stripe.com/jobs/search?gh_jid=8205278" target="_blank" rel="noopener noreferrer">
+                        Internal Audit - Regulatory Lead, EMEA
+                    </a>
+                </td>
+                <td><span class="badge badge-cat">Reporting</span></td>
+                <td><span class="badge badge-rej">ENGINEERING_INFRA_OR_SYSTEMS_BUILD</span></td>
+                <td class="evidence-cell">"Strong experience in risk-based audit planning, execution, and reporting across governance, compliance, financial reporting, and operational controls."</td>
+                <td>Describes software engineering, enterprise system integrations, or IT security/audit controls for an engineering/audit role (&#x27;Internal Audit - Regulatory Lead, EMEA&#x27;) rather than repetitive manual business operations.</td>
+                <td class="date-cell">
+                    <div>Pub: 2026-09-15</div>
+                    <div>Upd: 2026-10-29</div>
+                </td>
+            </tr>
+            
+            <tr data-reason="ENGINEERING_INFRA_OR_SYSTEMS_BUILD">
+                <td>48</td>
+                <td><strong>Stripe</strong></td>
+                <td>
+                    <a href="https://stripe.com/jobs/search?gh_jid=8317306" target="_blank" rel="noopener noreferrer">
+                        Senior Staff Engineer, Big Data Infrastructure
+                    </a>
+                </td>
+                <td><span class="badge badge-cat">Reconciliation</span></td>
+                <td><span class="badge badge-rej">ENGINEERING_INFRA_OR_SYSTEMS_BUILD</span></td>
+                <td class="evidence-cell">"Our infrastructure handles massive scale, managing over 800 PB of data, running 325,000 applications a day, and accounting for hundreds of millions of dollars in annual spend, directly powering critical pipelines like inbound payments, network reconciliation, and capital underwriting."</td>
+                <td>Describes software engineering, enterprise system integrations, or IT security/audit controls for an engineering/audit role (&#x27;Senior Staff Engineer, Big Data Infrastructure&#x27;) rather than repetitive manual business operations.</td>
+                <td class="date-cell">
+                    <div>Pub: 2026-11-04</div>
+                    <div>Upd: 2026-11-04</div>
+                </td>
+            </tr>
+            
+            <tr data-reason="ENGINEERING_INFRA_OR_SYSTEMS_BUILD">
+                <td>49</td>
+                <td><strong>Stripe</strong></td>
+                <td>
+                    <a href="https://stripe.com/jobs/search?gh_jid=7230670" target="_blank" rel="noopener noreferrer">
+                        Software Engineer, Data Orchestration
+                    </a>
+                </td>
+                <td><span class="badge badge-cat">Reconciliation</span></td>
+                <td><span class="badge badge-rej">ENGINEERING_INFRA_OR_SYSTEMS_BUILD</span></td>
+                <td class="evidence-cell">"The team supports a variety of use cases, including Payment, Ledger, ML, Fraud Detection, Product Analytics, Regulatory Reporting, Financial Data Reconciliation, and externally facing products like Radar and Sigma."</td>
+                <td>Describes software engineering, enterprise system integrations, or IT security/audit controls for an engineering/audit role (&#x27;Software Engineer, Data Orchestration&#x27;) rather than repetitive manual business operations.</td>
+                <td class="date-cell">
+                    <div>Pub: 2025-11-07</div>
+                    <div>Upd: 2026-11-03</div>
+                </td>
+            </tr>
+            
+            <tr data-reason="ENGINEERING_INFRA_OR_SYSTEMS_BUILD">
+                <td>50</td>
+                <td><strong>Stripe</strong></td>
+                <td>
+                    <a href="https://stripe.com/jobs/search?gh_jid=8231439" target="_blank" rel="noopener noreferrer">
+                        Software Engineer, Metronome Infrastructure
+                    </a>
+                </td>
+                <td><span class="badge badge-cat">Reporting</span></td>
+                <td><span class="badge badge-rej">ENGINEERING_INFRA_OR_SYSTEMS_BUILD</span></td>
+                <td class="evidence-cell">"Experience with subscription management, usage-based billing, or financial reporting systems"</td>
+                <td>Describes software engineering, enterprise system integrations, or IT security/audit controls for an engineering/audit role (&#x27;Software Engineer, Metronome Infrastructure&#x27;) rather than repetitive manual business operations.</td>
+                <td class="date-cell">
+                    <div>Pub: 2026-09-30</div>
+                    <div>Upd: 2026-10-29</div>
+                </td>
+            </tr>
+            
+            <tr data-reason="ENGINEERING_INFRA_OR_SYSTEMS_BUILD">
+                <td>51</td>
+                <td><strong>Stripe</strong></td>
+                <td>
+                    <a href="https://stripe.com/jobs/search?gh_jid=8185012" target="_blank" rel="noopener noreferrer">
+                        Software Engineer, Payin
+                    </a>
+                </td>
+                <td><span class="badge badge-cat">Reconciliation</span></td>
+                <td><span class="badge badge-rej">ENGINEERING_INFRA_OR_SYSTEMS_BUILD</span></td>
+                <td class="evidence-cell">"You will engineer the entire horizontal payments stack, driving every phase of a transaction&#x27;s journey: integrating with local payment rails, managing initiation and intelligent routing, ensuring reliable completion and automating reconciliation and payouts."</td>
+                <td>Describes software engineering, enterprise system integrations, or IT security/audit controls for an engineering/audit role (&#x27;Software Engineer, Payin&#x27;) rather than repetitive manual business operations.</td>
+                <td class="date-cell">
+                    <div>Pub: 2026-10-20</div>
+                    <div>Upd: 2026-10-29</div>
+                </td>
+            </tr>
+            
+            <tr data-reason="ENGINEERING_INFRA_OR_SYSTEMS_BUILD">
+                <td>52</td>
+                <td><strong>Stripe</strong></td>
+                <td>
+                    <a href="https://stripe.com/jobs/search?gh_jid=8231178" target="_blank" rel="noopener noreferrer">
+                        Software Engineer, Storage Integrations
+                    </a>
+                </td>
+                <td><span class="badge badge-cat">Reconciliation</span></td>
+                <td><span class="badge badge-rej">ENGINEERING_INFRA_OR_SYSTEMS_BUILD</span></td>
+                <td class="evidence-cell">"Experience implementing financial-account or money-movement workflows, such as virtual bank account provisioning, incoming payments, reversals, or transaction reconciliation"</td>
+                <td>Describes software engineering, enterprise system integrations, or IT security/audit controls for an engineering/audit role (&#x27;Software Engineer, Storage Integrations&#x27;) rather than repetitive manual business operations.</td>
+                <td class="date-cell">
+                    <div>Pub: 2026-10-14</div>
+                    <div>Upd: 2026-10-29</div>
+                </td>
+            </tr>
+            
+            <tr data-reason="ENGINEERING_INFRA_OR_SYSTEMS_BUILD">
+                <td>53</td>
+                <td><strong>Stripe</strong></td>
+                <td>
+                    <a href="https://stripe.com/jobs/search?gh_jid=8209970" target="_blank" rel="noopener noreferrer">
+                        Software Engineer, Stripe Data Pipeline
+                    </a>
+                </td>
+                <td><span class="badge badge-cat">Reconciliation</span></td>
+                <td><span class="badge badge-rej">ENGINEERING_INFRA_OR_SYSTEMS_BUILD</span></td>
+                <td class="evidence-cell">"Merchants depend on this data for their own billing, reconciliation and analytics, and the quality of what we deliver has immediate, visible impact."</td>
+                <td>Describes software engineering, enterprise system integrations, or IT security/audit controls for an engineering/audit role (&#x27;Software Engineer, Stripe Data Pipeline&#x27;) rather than repetitive manual business operations.</td>
+                <td class="date-cell">
+                    <div>Pub: 2026-09-21</div>
+                    <div>Upd: 2026-10-29</div>
+                </td>
+            </tr>
+            
+            <tr data-reason="ENGINEERING_INFRA_OR_SYSTEMS_BUILD">
+                <td>54</td>
+                <td><strong>Stripe</strong></td>
+                <td>
+                    <a href="https://stripe.com/jobs/search?gh_jid=8222459" target="_blank" rel="noopener noreferrer">
+                        Staff Engineer, Revenue Experiences
+                    </a>
+                </td>
+                <td><span class="badge badge-cat">Reporting</span></td>
+                <td><span class="badge badge-rej">ENGINEERING_INFRA_OR_SYSTEMS_BUILD</span></td>
+                <td class="evidence-cell">"Prior experience in the financial technology space, particularly in payment processing, accounting, or financial reporting."</td>
+                <td>Describes software engineering, enterprise system integrations, or IT security/audit controls for an engineering/audit role (&#x27;Staff Engineer, Revenue Experiences&#x27;) rather than repetitive manual business operations.</td>
+                <td class="date-cell">
+                    <div>Pub: 2026-09-30</div>
+                    <div>Upd: 2026-10-29</div>
+                </td>
+            </tr>
+            
+            <tr data-reason="ENGINEERING_INFRA_OR_SYSTEMS_BUILD">
+                <td>55</td>
+                <td><strong>Stripe</strong></td>
+                <td>
+                    <a href="https://stripe.com/jobs/search?gh_jid=8274582" target="_blank" rel="noopener noreferrer">
+                        Staff Software Engineer - Stripe Tax
+                    </a>
+                </td>
+                <td><span class="badge badge-cat">Reporting</span></td>
+                <td><span class="badge badge-rej">ENGINEERING_INFRA_OR_SYSTEMS_BUILD</span></td>
+                <td class="evidence-cell">"Experience in tax, financial technology, payments, accounting, financial reporting, or another domain where correctness and regulatory complexity are central"</td>
+                <td>Describes software engineering, enterprise system integrations, or IT security/audit controls for an engineering/audit role (&#x27;Staff Software Engineer - Stripe Tax&#x27;) rather than repetitive manual business operations.</td>
+                <td class="date-cell">
+                    <div>Pub: 2026-10-12</div>
+                    <div>Upd: 2026-10-29</div>
+                </td>
+            </tr>
+            
+            <tr data-reason="GENERIC_MENTION_WITHOUT_MANUAL_WORKFLOW">
+                <td>56</td>
+                <td><strong>Stripe</strong></td>
+                <td>
+                    <a href="https://stripe.com/jobs/search?gh_jid=8319488" target="_blank" rel="noopener noreferrer">
+                        Account Executive- Enterprise Grower
+                    </a>
+                </td>
+                <td><span class="badge badge-cat">CRM Operations</span></td>
+                <td><span class="badge badge-rej">GENERIC_MENTION_WITHOUT_MANUAL_WORKFLOW</span></td>
+                <td class="evidence-cell">"A disciplined approach to CRM, account planning, and forecasting."</td>
+                <td>Mentions a target tool or keyword in passing (e.g., list of enterprise tools or cross-functional context) without explicit evidence of a repetitive manual workflow.</td>
+                <td class="date-cell">
+                    <div>Pub: 2026-11-02</div>
+                    <div>Upd: 2026-11-02</div>
+                </td>
+            </tr>
+            
+            <tr data-reason="GENERIC_MENTION_WITHOUT_MANUAL_WORKFLOW">
+                <td>57</td>
+                <td><strong>Stripe</strong></td>
+                <td>
+                    <a href="https://stripe.com/jobs/search?gh_jid=8129956" target="_blank" rel="noopener noreferrer">
+                        Account Executive, Enterprise Grower, Platforms (Israel)
+                    </a>
+                </td>
+                <td><span class="badge badge-cat">CRM Operations</span></td>
+                <td><span class="badge badge-rej">GENERIC_MENTION_WITHOUT_MANUAL_WORKFLOW</span></td>
+                <td class="evidence-cell">"Fastidious approach to CRM hygiene and experience utilizing thorough sales forecasting metrics on a weekly/quarterly basis and communicating them in a succinct manner"</td>
+                <td>Mentions a target tool or keyword in passing (e.g., list of enterprise tools or cross-functional context) without explicit evidence of a repetitive manual workflow.</td>
+                <td class="date-cell">
+                    <div>Pub: 2026-08-24</div>
+                    <div>Upd: 2026-10-29</div>
+                </td>
+            </tr>
+            
+            <tr data-reason="GENERIC_MENTION_WITHOUT_MANUAL_WORKFLOW">
+                <td>58</td>
+                <td><strong>Stripe</strong></td>
+                <td>
+                    <a href="https://stripe.com/jobs/search?gh_jid=8348835" target="_blank" rel="noopener noreferrer">
+                        Account Executive Enterprise (Korean-speaking, Singapore based)
+                    </a>
+                </td>
+                <td><span class="badge badge-cat">CRM Operations</span></td>
+                <td><span class="badge badge-rej">GENERIC_MENTION_WITHOUT_MANUAL_WORKFLOW</span></td>
+                <td class="evidence-cell">"Maintain rigorous Salesforce pipeline hygiene: accurate sales stages, verified close dates, logical next steps, and updated deal valuations — refreshed weekly"</td>
+                <td>Mentions a target tool or keyword in passing (e.g., list of enterprise tools or cross-functional context) without explicit evidence of a repetitive manual workflow.</td>
+                <td class="date-cell">
+                    <div>Pub: 2026-11-04</div>
+                    <div>Upd: 2026-11-04</div>
+                </td>
+            </tr>
+            
+            <tr data-reason="GENERIC_MENTION_WITHOUT_MANUAL_WORKFLOW">
+                <td>59</td>
+                <td><strong>Stripe</strong></td>
+                <td>
+                    <a href="https://stripe.com/jobs/search?gh_jid=7576967" target="_blank" rel="noopener noreferrer">
+                        Account Executive, Enterprise Platforms (Grower)
+                    </a>
+                </td>
+                <td><span class="badge badge-cat">CRM Operations</span></td>
+                <td><span class="badge badge-rej">GENERIC_MENTION_WITHOUT_MANUAL_WORKFLOW</span></td>
+                <td class="evidence-cell">"Fastidious approach to CRM hygiene and experience utilizing thorough sales forecasting metrics on a weekly and quarterly basis and communicating them in a succinct manner"</td>
+                <td>Mentions a target tool or keyword in passing (e.g., list of enterprise tools or cross-functional context) without explicit evidence of a repetitive manual workflow.</td>
+                <td class="date-cell">
+                    <div>Pub: 2026-02-05</div>
+                    <div>Upd: 2026-10-29</div>
+                </td>
+            </tr>
+            
+            <tr data-reason="GENERIC_MENTION_WITHOUT_MANUAL_WORKFLOW">
+                <td>60</td>
+                <td><strong>Stripe</strong></td>
+                <td>
+                    <a href="https://stripe.com/jobs/search?gh_jid=8324997" target="_blank" rel="noopener noreferrer">
+                        Account Executive, Platforms Enterprise ( Hunter ) Japan
+                    </a>
+                </td>
+                <td><span class="badge badge-cat">CRM Operations</span></td>
+                <td><span class="badge badge-rej">GENERIC_MENTION_WITHOUT_MANUAL_WORKFLOW</span></td>
+                <td class="evidence-cell">"Fastidious approach to CRM hygiene and experience utilizing thorough sales forecasting metrics on a weekly/quarterly basis and communicating them in a succinct manner."</td>
+                <td>Mentions a target tool or keyword in passing (e.g., list of enterprise tools or cross-functional context) without explicit evidence of a repetitive manual workflow.</td>
+                <td class="date-cell">
+                    <div>Pub: 2026-11-02</div>
+                    <div>Upd: 2026-11-06</div>
+                </td>
+            </tr>
+            
+            <tr data-reason="GENERIC_MENTION_WITHOUT_MANUAL_WORKFLOW">
+                <td>61</td>
+                <td><strong>Stripe</strong></td>
+                <td>
+                    <a href="https://stripe.com/jobs/search?gh_jid=8077971" target="_blank" rel="noopener noreferrer">
+                        Account Executive, Platforms - Hunter
+                    </a>
+                </td>
+                <td><span class="badge badge-cat">CRM Operations</span></td>
+                <td><span class="badge badge-rej">GENERIC_MENTION_WITHOUT_MANUAL_WORKFLOW</span></td>
+                <td class="evidence-cell">"Fastidious approach to CRM hygiene and experience using thorough sales forecasting metrics on a weekly and quarterly basis and communicating them in a succinct manner"</td>
+                <td>Mentions a target tool or keyword in passing (e.g., list of enterprise tools or cross-functional context) without explicit evidence of a repetitive manual workflow.</td>
+                <td class="date-cell">
+                    <div>Pub: 2026-08-06</div>
+                    <div>Upd: 2026-11-06</div>
+                </td>
+            </tr>
+            
+            <tr data-reason="GENERIC_MENTION_WITHOUT_MANUAL_WORKFLOW">
+                <td>62</td>
+                <td><strong>Stripe</strong></td>
+                <td>
+                    <a href="https://stripe.com/jobs/search?gh_jid=8326105" target="_blank" rel="noopener noreferrer">
+                        Account Executive, Platforms Mid Market (Hunter), Japan
+                    </a>
+                </td>
+                <td><span class="badge badge-cat">CRM Operations</span></td>
+                <td><span class="badge badge-rej">GENERIC_MENTION_WITHOUT_MANUAL_WORKFLOW</span></td>
+                <td class="evidence-cell">"Fastidious approach to CRM hygiene and experience utilizing thorough sales forecasting metrics."</td>
+                <td>Mentions a target tool or keyword in passing (e.g., list of enterprise tools or cross-functional context) without explicit evidence of a repetitive manual workflow.</td>
+                <td class="date-cell">
+                    <div>Pub: 2026-11-03</div>
+                    <div>Upd: 2026-11-03</div>
+                </td>
+            </tr>
+            
+            <tr data-reason="GENERIC_MENTION_WITHOUT_MANUAL_WORKFLOW">
+                <td>63</td>
+                <td><strong>Stripe</strong></td>
+                <td>
+                    <a href="https://stripe.com/jobs/search?gh_jid=8103750" target="_blank" rel="noopener noreferrer">
+                        Accounting AI Solutions Lead
+                    </a>
+                </td>
+                <td><span class="badge badge-cat">Reporting</span></td>
+                <td><span class="badge badge-rej">GENERIC_MENTION_WITHOUT_MANUAL_WORKFLOW</span></td>
+                <td class="evidence-cell">"Our primary focus is maintaining a well-controlled environment that effectively supports corporate governance, financial reporting and disclosure requirements."</td>
+                <td>Mentions a target tool or keyword in passing (e.g., list of enterprise tools or cross-functional context) without explicit evidence of a repetitive manual workflow.</td>
+                <td class="date-cell">
+                    <div>Pub: 2026-08-03</div>
+                    <div>Upd: 2026-10-29</div>
+                </td>
+            </tr>
+            
+            <tr data-reason="GENERIC_MENTION_WITHOUT_MANUAL_WORKFLOW">
+                <td>64</td>
+                <td><strong>Stripe</strong></td>
+                <td>
+                    <a href="https://stripe.com/jobs/search?gh_jid=8103750" target="_blank" rel="noopener noreferrer">
+                        Accounting AI Solutions Lead
+                    </a>
+                </td>
+                <td><span class="badge badge-cat">Reporting</span></td>
+                <td><span class="badge badge-rej">GENERIC_MENTION_WITHOUT_MANUAL_WORKFLOW</span></td>
+                <td class="evidence-cell">"You’ll develop AI-powered tools and models, autonomous agents, and data products that automate complex workflows and provide actionable insights within a framework of financial reporting control."</td>
+                <td>Mentions a target tool or keyword in passing (e.g., list of enterprise tools or cross-functional context) without explicit evidence of a repetitive manual workflow.</td>
+                <td class="date-cell">
+                    <div>Pub: 2026-08-03</div>
+                    <div>Upd: 2026-10-29</div>
+                </td>
+            </tr>
+            
+            <tr data-reason="GENERIC_MENTION_WITHOUT_MANUAL_WORKFLOW">
+                <td>65</td>
+                <td><strong>Stripe</strong></td>
+                <td>
+                    <a href="https://stripe.com/jobs/search?gh_jid=8103750" target="_blank" rel="noopener noreferrer">
+                        Accounting AI Solutions Lead
+                    </a>
+                </td>
+                <td><span class="badge badge-cat">Reporting</span></td>
+                <td><span class="badge badge-rej">GENERIC_MENTION_WITHOUT_MANUAL_WORKFLOW</span></td>
+                <td class="evidence-cell">"Design and deploy autonomous AI agents using frameworks that can reason, plan, and execute complex multi-step problems and enhance decision-making processes through understanding risk and maintaining effective financial reporting controls."</td>
+                <td>Mentions a target tool or keyword in passing (e.g., list of enterprise tools or cross-functional context) without explicit evidence of a repetitive manual workflow.</td>
+                <td class="date-cell">
+                    <div>Pub: 2026-08-03</div>
+                    <div>Upd: 2026-10-29</div>
+                </td>
+            </tr>
+            
+            <tr data-reason="GENERIC_MENTION_WITHOUT_MANUAL_WORKFLOW">
+                <td>66</td>
+                <td><strong>Stripe</strong></td>
+                <td>
+                    <a href="https://stripe.com/jobs/search?gh_jid=8209639" target="_blank" rel="noopener noreferrer">
+                        Administrative Business Partner, Office of the President
+                    </a>
+                </td>
+                <td><span class="badge badge-cat">Reconciliation</span></td>
+                <td><span class="badge badge-rej">GENERIC_MENTION_WITHOUT_MANUAL_WORKFLOW</span></td>
+                <td class="evidence-cell">"Track, manage, and reconcile expenses monthly"</td>
+                <td>Mentions a target tool or keyword in passing (e.g., list of enterprise tools or cross-functional context) without explicit evidence of a repetitive manual workflow.</td>
+                <td class="date-cell">
+                    <div>Pub: 2026-09-17</div>
+                    <div>Upd: 2026-10-29</div>
+                </td>
+            </tr>
+            
+            <tr data-reason="GENERIC_MENTION_WITHOUT_MANUAL_WORKFLOW">
+                <td>67</td>
+                <td><strong>Stripe</strong></td>
+                <td>
+                    <a href="https://stripe.com/jobs/search?gh_jid=8195584" target="_blank" rel="noopener noreferrer">
+                        Channel Sales Executive
+                    </a>
+                </td>
+                <td><span class="badge badge-cat">CRM Operations</span></td>
+                <td><span class="badge badge-rej">GENERIC_MENTION_WITHOUT_MANUAL_WORKFLOW</span></td>
+                <td class="evidence-cell">"Ability to build and execute territory and opportunity-specific plans leveraging tools such as Salesforce and Crossbeam."</td>
+                <td>Mentions a target tool or keyword in passing (e.g., list of enterprise tools or cross-functional context) without explicit evidence of a repetitive manual workflow.</td>
+                <td class="date-cell">
+                    <div>Pub: 2026-09-11</div>
+                    <div>Upd: 2026-10-29</div>
+                </td>
+            </tr>
+            
+            <tr data-reason="GENERIC_MENTION_WITHOUT_MANUAL_WORKFLOW">
+                <td>68</td>
+                <td><strong>Stripe</strong></td>
+                <td>
+                    <a href="https://stripe.com/jobs/search?gh_jid=8126984" target="_blank" rel="noopener noreferrer">
+                        Channel Sales Executive, SaaS Platforms
+                    </a>
+                </td>
+                <td><span class="badge badge-cat">CRM Operations</span></td>
+                <td><span class="badge badge-rej">GENERIC_MENTION_WITHOUT_MANUAL_WORKFLOW</span></td>
+                <td class="evidence-cell">"Ability to build and execute territory and opportunity-specific plans, leveraging tools such as Salesforce and Crossbeam"</td>
+                <td>Mentions a target tool or keyword in passing (e.g., list of enterprise tools or cross-functional context) without explicit evidence of a repetitive manual workflow.</td>
+                <td class="date-cell">
+                    <div>Pub: 2026-09-10</div>
+                    <div>Upd: 2026-10-29</div>
+                </td>
+            </tr>
+            
+            <tr data-reason="GENERIC_MENTION_WITHOUT_MANUAL_WORKFLOW">
+                <td>69</td>
+                <td><strong>Stripe</strong></td>
+                <td>
+                    <a href="https://stripe.com/jobs/search?gh_jid=8357739" target="_blank" rel="noopener noreferrer">
+                        Controllership Intern
+                    </a>
+                </td>
+                <td><span class="badge badge-cat">Reporting</span></td>
+                <td><span class="badge badge-rej">GENERIC_MENTION_WITHOUT_MANUAL_WORKFLOW</span></td>
+                <td class="evidence-cell">"Stripe’s Controllership organization is responsible for the accurate and timely recording of Stripe’s business activities, the integrity of our financial reporting, and the scalable processes and controls that support our growth."</td>
+                <td>Mentions a target tool or keyword in passing (e.g., list of enterprise tools or cross-functional context) without explicit evidence of a repetitive manual workflow.</td>
+                <td class="date-cell">
+                    <div>Pub: 2026-11-06</div>
+                    <div>Upd: 2026-11-06</div>
+                </td>
+            </tr>
+            
+            <tr data-reason="GENERIC_MENTION_WITHOUT_MANUAL_WORKFLOW">
+                <td>70</td>
+                <td><strong>Stripe</strong></td>
+                <td>
+                    <a href="https://stripe.com/jobs/search?gh_jid=8357739" target="_blank" rel="noopener noreferrer">
+                        Controllership Intern
+                    </a>
+                </td>
+                <td><span class="badge badge-cat">Reporting</span></td>
+                <td><span class="badge badge-rej">GENERIC_MENTION_WITHOUT_MANUAL_WORKFLOW</span></td>
+                <td class="evidence-cell">"Corporate Accounting supports Stripe’s close, financial reporting, corporate accounting processes, and control environment"</td>
+                <td>Mentions a target tool or keyword in passing (e.g., list of enterprise tools or cross-functional context) without explicit evidence of a repetitive manual workflow.</td>
+                <td class="date-cell">
+                    <div>Pub: 2026-11-06</div>
+                    <div>Upd: 2026-11-06</div>
+                </td>
+            </tr>
+            
+            <tr data-reason="GENERIC_MENTION_WITHOUT_MANUAL_WORKFLOW">
+                <td>71</td>
+                <td><strong>Stripe</strong></td>
+                <td>
+                    <a href="https://stripe.com/jobs/search?gh_jid=8357739" target="_blank" rel="noopener noreferrer">
+                        Controllership Intern
+                    </a>
+                </td>
+                <td><span class="badge badge-cat">Reporting</span></td>
+                <td><span class="badge badge-rej">GENERIC_MENTION_WITHOUT_MANUAL_WORKFLOW</span></td>
+                <td class="evidence-cell">"Support core Controllership activities based on your placement, including accounts receivable operations, monthly and quarterly close, financial reporting, product accounting, or internal controls"</td>
+                <td>Mentions a target tool or keyword in passing (e.g., list of enterprise tools or cross-functional context) without explicit evidence of a repetitive manual workflow.</td>
+                <td class="date-cell">
+                    <div>Pub: 2026-11-06</div>
+                    <div>Upd: 2026-11-06</div>
+                </td>
+            </tr>
+            
+            </tbody>
+        </table>
+    </div>
+
+    <div class="section">
+        <h2>5. Limitations, Estimates &amp; Commercial Recommendation</h2>
+        <ul>
+            <li><strong>Measured vs. Estimated Figures:</strong> All counts above (1,974 jobs scanned, 864 candidate statements, 61 valid signals, 803 rejected matches, 0 API errors) are <strong>100% exact measured figures</strong> from live Greenhouse API responses on 2026-11-15. An <em>estimated</em> manual review precision of our filtered valid signals is <strong>~90–95% (Estimated)</strong> based on human inspection of all 61 valid rows, while recall against subtle/implicit manual processes phrased without our target keywords is <strong>~60–70% (Estimated)</strong>.</li>
+            <li><strong>High Tech-Maturity Bias in Sample:</strong> Stripe, Cloudflare, GitLab, Datadog, and Gusto are large cloud-native technology companies. In their job descriptions, 9 of the 61 valid signals explicitly mention using <em>in-house AI/ERP automation</em> to eliminate manual work. Mid-market non-tech companies on Greenhouse may exhibit higher direct manual execution and lower internal AI build capacity.</li>
+            <li><strong>Multi-Region Duplicate Postings:</strong> Global companies publish identical job descriptions across multiple regions (10 of 61 valid signals are regional duplicates, leaving 51 unique workflow signals).</li>
+            <li><strong>Recommendation — IMPROVE:</strong> Signal extraction works deterministically and filters out &gt;94% of keyword noise, proving technical feasibility. However, commercially we recommend IMPROVE before scaling to 20+ boards: (1) High-growth tech companies often hire internal AI/Ops builders to automate workflows in-house rather than buying external tools, so we should shift the target board list toward mid-market, less technical organizations; (2) Deduplicate multi-region job postings by default; and (3) Score Direct Manual Execution roles separately from Internal Automation Mandate roles.</li>
+        </ul>
+    </div>
+</div>
+
+<script>
+function filterValidSignals() {
+    const cat = document.getElementById('catFilter').value;
+    const sub = document.getElementById('subFilter').value;
+    const rows = document.querySelectorAll('#validTable tbody tr');
+    rows.forEach(row => {
+        const matchCat = (cat === 'ALL' || row.getAttribute('data-category') === cat);
+        const matchSub = (sub === 'ALL' || row.getAttribute('data-subtype') === sub);
+        row.style.display = (matchCat && matchSub) ? '' : 'none';
+    });
+}
+function filterRejected() {
+    const reason = document.getElementById('rejFilter').value;
+    const rows = document.querySelectorAll('#rejectedTable tbody tr');
+    rows.forEach(row => {
+        const matchReason = (reason === 'ALL' || row.getAttribute('data-reason') === reason);
+        row.style.display = matchReason ? '' : 'none';
+    });
+}
+</script>
+</body>
+</html>

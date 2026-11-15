@@ -1,0 +1,31 @@
+{
+  "phase": "Phase 1 - Real Data Validation",
+  "description": "5 verified public Greenhouse job boards selected to validate commercial signal quality of ManualOps Radar.",
+  "boards": [
+    {
+      "board_token": "stripe",
+      "company_name": "Stripe",
+      "sector": "Fintech & Payments Infrastructure"
+    },
+    {
+      "board_token": "cloudflare",
+      "company_name": "Cloudflare",
+      "sector": "Cloud Connectivity & Security"
+    },
+    {
+      "board_token": "gitlab",
+      "company_name": "GitLab",
+      "sector": "DevSecOps Platform"
+    },
+    {
+      "board_token": "datadog",
+      "company_name": "Datadog",
+      "sector": "Cloud Monitoring & Analytics"
+    },
+    {
+      "board_token": "gusto",
+      "company_name": "Gusto",
+      "sector": "Payroll, Benefits & HR Platform"
+    }
+  ]
+}
