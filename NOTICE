@@ -1,0 +1,22 @@
+ManualOps Radar
+Copyright 2026 khaledhabdo
+
+This product includes software developed by khaledhabdo and contributors,
+licensed under the Apache License, Version 2.0 (see LICENSE).
+
+THIRD-PARTY DATA & RESEARCH EXCERPT NOTICE:
+The Apache License, Version 2.0 applies ONLY to the source code, tests,
+configuration schemas, and original documentation created for this project
+(under src/, tests/, .github/, and original markdown guides).
+
+Historical research artifacts and snapshots stored under data/ and reports/
+(as well as quoted verbatim excerpts in docs/PHASE1_5_COMMERCIAL_VALIDATION.md)
+contain short, verbatim text excerpts from publicly accessible job postings
+published by third-party employers via Greenhouse's public Job Board API.
+Those third-party excerpts:
+  - Remain the intellectual property of their respective employers/publishers.
+  - Are NOT licensed under the Apache License, Version 2.0.
+  - Are preserved strictly with original source URLs and retrieval dates for
+    non-commercial research validation, auditability, and reproducibility.
+  - Any redistribution or commercial reuse of third-party job posting text is
+    subject to the respective publisher's terms of service and applicable law.

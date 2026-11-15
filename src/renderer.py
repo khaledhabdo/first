@@ -2,16 +2,56 @@
 
 import html
 from typing import Any
+from urllib.parse import urlsplit
+
+ALLOWED_URL_SCHEMES = frozenset({"http", "https"})
+
+
+def sanitize_http_url(raw_url: str | None) -> str | None:
+    """
+    Validates that a URL uses an explicit http:// or https:// scheme and has a host.
+    Blocks javascript:, data:, vbscript:, file:, and malformed links from HTML href attributes.
+    """
+    if not isinstance(raw_url, str):
+        return None
+    cleaned = raw_url.strip()
+    if not cleaned:
+        return None
+    try:
+        parsed = urlsplit(cleaned)
+    except ValueError:
+        return None
+    if parsed.scheme.lower() not in ALLOWED_URL_SCHEMES:
+        return None
+    if not parsed.netloc:
+        return None
+    return cleaned
+
+
+def _render_safe_link(raw_url: str | None, label: str) -> str:
+    """Renders a safe external anchor tag or a plain escaped label if the URL is invalid/unsafe."""
+    safe_url = sanitize_http_url(raw_url)
+    escaped_label = html.escape(label or "Untitled Role", quote=True)
+    if safe_url is None:
+        return (
+            f'<span class="muted" title="Blocked non-HTTP(S) or invalid URL">'
+            f"{escaped_label} [unsafe/invalid URL blocked]</span>"
+        )
+    escaped_url = html.escape(safe_url, quote=True)
+    return (
+        f'<a href="{escaped_url}" target="_blank" rel="noopener noreferrer">'
+        f"{escaped_label}</a>"
+    )
 
 
 def render_phase1_html_report(report_data: dict[str, Any]) -> str:
     """
     Generates a self-contained, human-readable HTML report containing:
-    - Exact scan metrics (jobs scanned, valid signals, false positives, errors)
+    - Exact scan metrics (jobs scanned, heuristic-accepted signals, heuristic-rejected counts, errors)
     - Distinction between General Software Skills, Explicit Manual Work, and Buying Intent
-    - All valid workflow signals with original URL, company, title, dates, and evidence
-    - Representative & filterable rejected matches with explicit rejection reasons
-    - Limitations and commercial recommendation (GO / IMPROVE / STOP)
+    - All heuristic-accepted signals with sanitized URLs, company, title, dates, and evidence
+    - Representative & filterable rejected matches with explicit rejection codes
+    - Evaluation integrity status and commercial recommendation
     """
     summary = report_data["summary"]
     boards = report_data["boards"]
@@ -69,6 +109,7 @@ def render_phase1_html_report(report_data: dict[str, Any]) -> str:
         )
         pub_date = (item.get("first_published") or "N/A")[:10]
         upd_date = (item.get("updated_at") or "N/A")[:10]
+        safe_job_link = _render_safe_link(item.get("source_url"), item.get("job_title", ""))
         valid_rows_html.append(
             f"""
             <tr data-category="{html.escape(item["workflow_category"])}" data-subtype="{html.escape(item["signal_subtype"])}">
@@ -78,9 +119,7 @@ def render_phase1_html_report(report_data: dict[str, Any]) -> str:
                     <span class="muted">{html.escape(item["department"])}</span>
                 </td>
                 <td>
-                    <a href="{html.escape(item["source_url"])}" target="_blank" rel="noopener noreferrer">
-                        {html.escape(item["job_title"])}
-                    </a><br/>
+                    {safe_job_link}<br/>
                     <span class="muted">{html.escape(item["location"])}</span>
                 </td>
                 <td>
@@ -103,15 +142,14 @@ def render_phase1_html_report(report_data: dict[str, Any]) -> str:
     for idx, item in enumerate(rejected_samples, start=1):
         pub_date = (item.get("first_published") or "N/A")[:10]
         upd_date = (item.get("updated_at") or "N/A")[:10]
+        safe_rej_link = _render_safe_link(item.get("source_url"), item.get("job_title", ""))
         rejected_rows_html.append(
             f"""
             <tr data-reason="{html.escape(str(item["rejection_reason"]))}">
                 <td>{idx}</td>
                 <td><strong>{html.escape(item["company_name"])}</strong></td>
                 <td>
-                    <a href="{html.escape(item["source_url"])}" target="_blank" rel="noopener noreferrer">
-                        {html.escape(item["job_title"])}
-                    </a>
+                    {safe_rej_link}
                 </td>
                 <td><span class="badge badge-cat">{html.escape(item["workflow_category"])}</span></td>
                 <td><span class="badge badge-rej">{html.escape(str(item["rejection_reason"]))}</span></td>
@@ -139,7 +177,8 @@ def render_phase1_html_report(report_data: dict[str, Any]) -> str:
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>ManualOps Radar — Phase 1 Real Data Validation Report</title>
+    <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; script-src 'unsafe-inline'; img-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none';" />
+    <title>ManualOps Radar — Phase 1.5 Real Data Validation Report</title>
     <style>
         :root {{
             --bg: #f8fafc;
