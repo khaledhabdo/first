@@ -113,7 +113,7 @@
     <header>
         <h1>ManualOps Radar — Phase 1: Real Data Validation Report</h1>
         <div class="muted">
-            Generated at: <strong>2026-11-15T04:40:40Z</strong> |
+            Generated at: <strong>2026-11-15T12:35:01Z</strong> |
             Source: Official Greenhouse Public Job Board API (5 Verified Companies)
         </div>
         <div class="banner-warning">
@@ -132,7 +132,7 @@
         </div>
         <div class="card">
             <div class="metric-label">Total Jobs Scanned</div>
-            <div class="metric-value">1,974</div>
+            <div class="metric-value">1,977</div>
             <div class="muted">100% live public postings (Measured)</div>
         </div>
         <div class="card">
@@ -141,24 +141,24 @@
             <div class="muted">Broad keyword hits across 5 categories</div>
         </div>
         <div class="card">
-            <div class="metric-label">Valid Workflow Signals</div>
+            <div class="metric-label">Heuristic-Accepted Signals</div>
             <div class="metric-value" style="color: #166534;">61</div>
-            <div class="muted">51 unique (10 regional duplicates)</div>
+            <div class="muted">51 unique strings (28 heuristic groupings)</div>
         </div>
         <div class="card">
-            <div class="metric-label">Rejected False Positives</div>
+            <div class="metric-label">Heuristic-Rejected Candidates</div>
             <div class="metric-value" style="color: #991b1b;">803</div>
-            <div class="muted">92.9% of raw keyword matches rejected</div>
+            <div class="muted">92.9% heuristic filter rejection rate (unverified without ground truth)</div>
         </div>
         <div class="card">
-            <div class="metric-label">Phase 1 Recommendation</div>
-            <div class="metric-value" style="color: #b45309;">IMPROVE</div>
-            <div class="muted">Refine target persona &amp; filters before Phase 2</div>
+            <div class="metric-label">Recommendation</div>
+            <div class="metric-value" style="color: #b45309; font-size: 1.25rem;">PIVOT_SEGMENT_BEFORE_BUILDING</div>
+            <div class="muted">Ground Truth: PENDING_INDEPENDENT_HUMAN_LABELS</div>
         </div>
     </div>
 
     <div class="section">
-        <h2>1. Board-by-Board Validation Summary (Measured Figures)</h2>
+        <h2>1. Board-by-Board Validation Summary (Measured API &amp; Heuristic Counts)</h2>
         <table>
             <thead>
                 <tr>
@@ -166,8 +166,8 @@
                     <th>API Status</th>
                     <th>Jobs Scanned</th>
                     <th>Candidate Sentences</th>
-                    <th>Valid Workflow Signals</th>
-                    <th>Rejected False Positives</th>
+                    <th>Heuristic-Accepted Signals</th>
+                    <th>Heuristic-Rejected Candidates</th>
                 </tr>
             </thead>
             <tbody>
@@ -193,7 +193,7 @@
             <tr>
                 <td><strong>GitLab</strong> <code>(gitlab)</code></td>
                 <td><span class="badge badge-ok">HTTP 200</span></td>
-                <td>251</td>
+                <td>254</td>
                 <td>137</td>
                 <td><strong>14</strong> <span class="muted">(6 unique)</span></td>
                 <td>123</td>
@@ -222,25 +222,25 @@
     </div>
 
     <div class="section">
-        <h2>2. Signal Breakdown: Skills vs. Manual Work vs. Buying Intent</h2>
+        <h2>2. Heuristic Signal Breakdown: Skills vs. Manual Work vs. Buying Intent</h2>
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px;">
             <div>
-                <h3>Valid Signals by Workflow Category (61 total)</h3>
+                <h3>Heuristic-Accepted Signals by Category (61 total)</h3>
                 <ul><li><strong>Reconciliation</strong>: 28 valid signals</li><li><strong>CRM Operations</strong>: 24 valid signals</li><li><strong>Reporting</strong>: 4 valid signals</li><li><strong>Data Entry</strong>: 3 valid signals</li><li><strong>Spreadsheets</strong>: 2 valid signals</li></ul>
                 <p class="muted">
-                    <strong>Direct Manual Execution:</strong> 52 signals<br/>
-                    <strong>Internal Automation Mandate:</strong> 9 signals
+                    <strong>Direct Manual Execution (Heuristic):</strong> 52 signals<br/>
+                    <strong>Internal Automation Mandate (Heuristic):</strong> 9 signals
                 </p>
             </div>
             <div>
-                <h3>Rejected False Positives by Automated Rule (803 total)</h3>
+                <h3>Heuristic-Rejected Candidates by Rule (803 total)</h3>
                 <ul><li><code>GENERIC_MENTION_WITHOUT_MANUAL_WORKFLOW</code>: <strong>331</strong> rejected statements</li><li><code>GENERAL_SOFTWARE_SKILL</code>: <strong>244</strong> rejected statements</li><li><code>VERB_EXCEL_OR_IDIOM</code>: <strong>159</strong> rejected statements</li><li><code>ENGINEERING_INFRA_OR_SYSTEMS_BUILD</code>: <strong>56</strong> rejected statements</li><li><code>PRODUCT_PITCH_OR_CUSTOMER_FEATURE</code>: <strong>13</strong> rejected statements</li></ul>
             </div>
         </div>
     </div>
 
     <div class="section">
-        <h2>3. All Validated Manual Workflow Signals (61 Real Matches)</h2>
+        <h2>3. All Heuristic-Accepted Manual Workflow Signals (61 Real Matches)</h2>
         <div class="controls">
             <label for="catFilter"><strong>Filter by Category:</strong></label>
             <select id="catFilter" onchange="filterValidSignals()">
@@ -1163,10 +1163,10 @@
                     <span class="muted">Sales Development</span>
                 </td>
                 <td>
-                    <a href="https://job-boards.greenhouse.io/gitlab/jobs/8532272002" target="_blank" rel="noopener noreferrer">
+                    <a href="https://job-boards.greenhouse.io/gitlab/jobs/8532274002" target="_blank" rel="noopener noreferrer">
                         Business Development Representative
                     </a><br/>
-                    <span class="muted">Remote, North America</span>
+                    <span class="muted">Remote, Ireland; Remote, Spain; Remote, United Kingdom</span>
                 </td>
                 <td>
                     <span class="badge badge-cat">CRM Operations</span><br/>
@@ -1189,10 +1189,10 @@
                     <span class="muted">Sales Development</span>
                 </td>
                 <td>
-                    <a href="https://job-boards.greenhouse.io/gitlab/jobs/8532274002" target="_blank" rel="noopener noreferrer">
+                    <a href="https://job-boards.greenhouse.io/gitlab/jobs/8532272002" target="_blank" rel="noopener noreferrer">
                         Business Development Representative
                     </a><br/>
-                    <span class="muted">Remote, Ireland; Remote, Spain; Remote, United Kingdom</span>
+                    <span class="muted">Remote, North America</span>
                 </td>
                 <td>
                     <span class="badge badge-cat">CRM Operations</span><br/>
@@ -1863,11 +1863,11 @@
     </div>
 
     <div class="section">
-        <h2>4. Rejected Matches &amp; False-Positive Audit Log (Showing 71 Representative Real Rejections across All 803 Filtered Statements)</h2>
+        <h2>4. Heuristic-Rejected Candidates Audit Log (Showing 71 Representative Real Rejections across All 803 Filtered Statements)</h2>
         <p class="muted">
-            Naive keyword matching on job descriptions produces <strong>92.9% noise</strong>.
-            Below are real rejected statements demonstrating how ManualOps Radar separates general software skills,
-            English idioms ("excel in"), product marketing copy, and software engineering roles from genuine manual workflows.
+            Deterministic rules filtered out <strong>92.9%</strong> of broad keyword hits (heuristic filter rejection rate, not a ground-truth false-positive rate).
+            Below are real rejected statements demonstrating how heuristic rules separate general software skills,
+            English idioms ("excel in"), product marketing copy, and software engineering roles from candidate workflow statements.
         </p>
         <div class="controls">
             <label for="rejFilter"><strong>Filter by Rejection Reason:</strong></label>
@@ -3178,12 +3178,12 @@
     </div>
 
     <div class="section">
-        <h2>5. Documented Labeled Evaluation, Limitations &amp; Commercial Recommendation</h2>
+        <h2>5. Evaluation Integrity, Heuristic Groupings &amp; Commercial Recommendation</h2>
         <ul>
-            <li><strong>Documented Labeled Evaluation (Replacing Unverified Estimates):</strong> Across all 61 accepted signals (collapsing into <strong>28 unique Company/Workflow clusters</strong>), a documented manual audit shows: <strong>93.4% (57/61) Task-Level Operational Precision</strong>, but only <strong>32.8% (20/61) Strict Commercial Automation-Pain Precision</strong> (or <strong>57.1% [16/28]</strong> at the deduplicated Company/Workflow level), because <strong>60.7% (37/61)</strong> are <em>Routine Job Responsibilities</em> (e.g., BDRs logging their own sales calls in Salesforce or routine monthly GAAP close) and <strong>6.6% (4/61)</strong> are <em>Remaining False Positives</em>. Furthermore, in a 25-statement manual audit of rejected candidates, <strong>76.0% (19/25)</strong> were confirmed True Negatives while <strong>24.0% (6/25)</strong> were Missed Valid Signals (False Negatives). Verified external software or outsourcing buying intent is <strong>0.0% (0/61)</strong>.</li>
-            <li><strong>High Tech-Maturity Bias in Sample:</strong> Stripe, Cloudflare, GitLab, Datadog, and Gusto are large cloud-native technology companies. In their job descriptions, 9 of the 61 valid signals explicitly mention using <em>in-house AI/ERP automation</em> to eliminate manual work. Mid-market non-tech companies on Greenhouse may exhibit higher direct manual execution and lower internal AI build capacity.</li>
-            <li><strong>Multi-Region &amp; Multi-Role Duplicate Postings:</strong> Global companies publish identical job descriptions across multiple regions (10 verbatim regional duplicates, and 33 role/region variants that collapse into <strong>28 unique Company/Workflow clusters</strong>).</li>
-            <li><strong>Recommendation — IMPROVE:</strong> Signal extraction works deterministically and filters out &gt;94% of keyword noise, proving technical feasibility. However, commercially we recommend IMPROVE before scaling to 20+ boards: (1) High-growth tech companies often hire internal AI/Ops builders to automate workflows in-house rather than buying external tools, so we should shift the target board list toward mid-market, less technical organizations; (2) Deduplicate multi-region job postings by default; and (3) Score Direct Manual Execution roles separately from Internal Automation Mandate roles.</li>
+            <li><strong>Separation of Heuristic Classifications vs. Human Ground-Truth Labels:</strong> All counts above (1,977 jobs scanned, 864 candidate statements, 61 heuristic-accepted signals, 803 heuristic-rejected candidates) are <strong>automated heuristic outputs</strong>. Independent human ground-truth evaluation status is <code>PENDING_INDEPENDENT_HUMAN_LABELS</code> (0 of 50 sampled records independently labeled in <code>data/phase1_5_evaluation_worksheet.csv</code>).</li>
+            <li><strong>Heuristic Rejection Rate &ne; Ground-Truth False-Positive Rate:</strong> The <strong>92.9%</strong> heuristic rejection rate measures the share of broad keyword matches filtered out by deterministic rules; true precision and false-negative rates require completing independent human labeling per <code>docs/LABELING_GUIDELINES.md</code>.</li>
+            <li><strong>Heuristic Company/Workflow Groupings:</strong> Automated keyword clustering groups the 61 accepted signals into <strong>28 heuristic company/workflow groupings</strong>. These are text-similarity approximations, not verified distinct internal business processes.</li>
+            <li><strong>Recommendation — PIVOT_SEGMENT_BEFORE_BUILDING:</strong> Technical extraction is fast and free, but heuristic signal counts do not equal commercial demand. Wait for independent human labeling on the 50-row evaluation sample and validate whether small automation agencies will pay for mid-market operational workflow briefs before building Phase 2.</li>
         </ul>
     </div>
 </div>

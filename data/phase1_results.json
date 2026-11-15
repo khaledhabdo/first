@@ -1,17 +1,18 @@
 {
-  "generated_at": "2026-11-15T04:40:40Z",
-  "phase": "Phase 1: Real Data Validation",
+  "generated_at": "2026-11-15T12:35:01Z",
+  "phase": "Phase 1.5: Evaluation Integrity & Commercial Validation",
   "summary": {
     "boards_configured": 5,
     "boards_scanned": 5,
     "api_errors_count": 0,
-    "total_jobs_scanned": 1974,
+    "total_jobs_scanned": 1977,
     "total_candidates_evaluated": 864,
     "valid_signals_count": 61,
     "unique_valid_signals_count": 51,
     "regional_duplicates_count": 10,
-    "rejected_false_positives_count": 803,
-    "false_positive_rate_pct": 92.9,
+    "heuristic_workflow_clusters_count": 28,
+    "heuristic_rejected_candidates_count": 803,
+    "heuristic_rejection_rate_pct": 92.9,
     "valid_by_category": {
       "Spreadsheets": 2,
       "Reconciliation": 28,
@@ -23,6 +24,11 @@
       "INTERNAL_AUTOMATION_MANDATE": 9,
       "DIRECT_MANUAL_EXECUTION": 52
     },
+    "heuristic_pain_tier_breakdown": {
+      "GENUINE_AUTOMATION_PAIN": 20,
+      "ROUTINE_JOB_RESPONSIBILITY": 37,
+      "REMAINING_FALSE_POSITIVE": 4
+    },
     "rejected_by_reason": {
       "GENERAL_SOFTWARE_SKILL": 244,
       "VERB_EXCEL_OR_IDIOM": 159,
@@ -30,19 +36,20 @@
       "PRODUCT_PITCH_OR_CUSTOMER_FEATURE": 13,
       "ENGINEERING_INFRA_OR_SYSTEMS_BUILD": 56
     },
-    "labeled_evaluation": {
-      "task_level_operational_precision_pct": 93.4,
-      "strict_automation_pain_precision_on_all_61_pct": 32.8,
-      "strict_automation_pain_precision_on_28_dedup_workflows_pct": 57.1,
-      "routine_job_responsibility_rate_on_all_61_pct": 60.7,
-      "remaining_false_positive_rate_on_all_61_pct": 6.6,
-      "external_buying_or_outsourcing_intent_pct": 0.0,
-      "estimated_unstructured_recall_pct": "60-70% (Estimated; misses implicit manual workflows not using target terms)"
+    "ground_truth_evaluation": {
+      "status": "PENDING_INDEPENDENT_HUMAN_LABELS",
+      "total_sample_size": 50,
+      "human_labeled_count": 0,
+      "verified_task_precision_pct": null,
+      "verified_commercial_pain_precision_pct": null,
+      "verified_false_positive_rate_on_accepted_pct": null,
+      "verified_false_negative_rate_on_rejected_pct": null,
+      "note": "No independent human ground-truth labels have been submitted yet. All classification counts in this report are automated heuristic outputs, not verified ground-truth precision/recall."
     }
   },
   "recommendation": {
-    "verdict": "IMPROVE",
-    "summary": "Signal extraction works deterministically and filters out >94% of keyword noise, proving technical feasibility. However, commercially we recommend IMPROVE before scaling to 20+ boards: (1) High-growth tech companies often hire internal AI/Ops builders to automate workflows in-house rather than buying external tools, so we should shift the target board list toward mid-market, less technical organizations; (2) Deduplicate multi-region job postings by default; and (3) Score Direct Manual Execution roles separately from Internal Automation Mandate roles."
+    "verdict": "PIVOT_SEGMENT_BEFORE_BUILDING",
+    "summary": "Technical extraction is fast and free, but heuristic signal counts do not equal commercial demand. Wait for independent human labeling on the 50-row evaluation sample and validate whether small automation agencies will pay for mid-market operational workflow briefs before building Phase 2."
   },
   "boards": [
     {
@@ -71,7 +78,7 @@
       "board_token": "gitlab",
       "company_name": "GitLab",
       "http_status": 200,
-      "jobs_fetched": 251,
+      "jobs_fetched": 254,
       "candidate_sentences_evaluated": 137,
       "valid_signals_count": 14,
       "unique_valid_signals_count": 6,
@@ -956,12 +963,12 @@
     {
       "board_token": "gitlab",
       "company_name": "GitLab",
-      "job_id": 8532272002,
+      "job_id": 8532274002,
       "job_title": "Business Development Representative",
       "department": "Sales Development",
-      "location": "Remote, North America",
-      "source_url": "https://job-boards.greenhouse.io/gitlab/jobs/8532272002",
-      "first_published": "2026-05-01T11:27:22-04:00",
+      "location": "Remote, Ireland; Remote, Spain; Remote, United Kingdom",
+      "source_url": "https://job-boards.greenhouse.io/gitlab/jobs/8532274002",
+      "first_published": "2026-05-01T11:28:37-04:00",
       "updated_at": "2026-11-06T15:25:07-05:00",
       "workflow_category": "CRM Operations",
       "exact_evidence": "Manage, track, and accurately report all prospecting activities and pipeline in Salesforce to provide clear visibility into performance and forecast.",
@@ -981,12 +988,12 @@
     {
       "board_token": "gitlab",
       "company_name": "GitLab",
-      "job_id": 8532274002,
+      "job_id": 8532272002,
       "job_title": "Business Development Representative",
       "department": "Sales Development",
-      "location": "Remote, Ireland; Remote, Spain; Remote, United Kingdom",
-      "source_url": "https://job-boards.greenhouse.io/gitlab/jobs/8532274002",
-      "first_published": "2026-05-01T11:28:37-04:00",
+      "location": "Remote, North America",
+      "source_url": "https://job-boards.greenhouse.io/gitlab/jobs/8532272002",
+      "first_published": "2026-05-01T11:27:22-04:00",
       "updated_at": "2026-11-06T15:25:07-05:00",
       "workflow_category": "CRM Operations",
       "exact_evidence": "Manage, track, and accurately report all prospecting activities and pipeline in Salesforce to provide clear visibility into performance and forecast.",

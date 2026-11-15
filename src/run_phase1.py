@@ -6,10 +6,19 @@ import json
 from pathlib import Path
 from typing import Any
 
+from src.audit_phase1 import (
+    classify_commercial_signal_quality,
+    normalize_workflow_signature,
+)
 from src.classifier import classify_statement
 from src.fetcher import fetch_board_jobs
 from src.models import BoardScanResult, EvaluatedCandidate
 from src.parser import extract_candidate_statements
+from src.prepare_eval_sample import (
+    build_reproducible_evaluation_sample,
+    compute_ground_truth_metrics,
+    export_evaluation_sample_files,
+)
 from src.renderer import render_phase1_html_report
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
@@ -23,13 +32,12 @@ def select_representative_rejections(
     max_per_reason: int = 15,
 ) -> list[dict[str, Any]]:
     """
-    Selects a diverse, deduplicated sample of rejected matches across all rejection reasons
-    and companies for display in the HTML audit table.
+    Selects a diverse, deduplicated sample of heuristic-rejected candidates across all
+    rejection codes and companies for display in the HTML audit table.
     """
     by_reason: dict[str, list[EvaluatedCandidate]] = defaultdict(list)
     seen_evidence: set[tuple[str, str]] = set()
 
-    # prioritize non-verb-excel general skills, product pitches, engineering builds, etc.
     for item in rejected_list:
         key = (item.board_token, item.exact_evidence.lower())
         if key in seen_evidence:
@@ -58,7 +66,7 @@ def run_validation(
     json_out_path: Path = DEFAULT_JSON_OUT,
     html_out_path: Path = DEFAULT_HTML_OUT,
 ) -> dict[str, Any]:
-    """Executes Phase 1 real data validation across the 5 verified Greenhouse boards."""
+    """Executes Phase 1/1.5 real data validation across the 5 verified Greenhouse boards."""
     with open(config_path, encoding="utf-8") as f:
         config = json.load(f)
 
@@ -123,15 +131,33 @@ def run_validation(
     total_candidates = len(all_valid) + len(all_rejected)
     unique_valid_count = sum(1 for v in all_valid if not v.is_regional_duplicate)
     regional_dup_count = sum(1 for v in all_valid if v.is_regional_duplicate)
-    fp_rate = round((len(all_rejected) / total_candidates * 100.0), 1) if total_candidates else 0.0
+    heuristic_rejection_rate = (
+        round((len(all_rejected) / total_candidates * 100.0), 1) if total_candidates else 0.0
+    )
 
     valid_by_cat = dict(Counter(v.workflow_category for v in all_valid))
     valid_by_subtype = dict(Counter(v.signal_subtype for v in all_valid))
     rejected_by_reason = dict(Counter(str(r.rejection_reason) for r in all_rejected))
 
+    # Dynamically compute heuristic company/workflow groupings and heuristic commercial tiers
+    heuristic_clusters = {
+        normalize_workflow_signature(v.to_dict()) for v in all_valid
+    }
+    heuristic_pain_tiers = dict(
+        Counter(
+            classify_commercial_signal_quality(v.to_dict())["audit_label"]
+            for v in all_valid
+        )
+    )
+
+    # Prepare reproducible evaluation sample with blank human_ground_truth fields
+    eval_sample_records = build_reproducible_evaluation_sample(all_valid, all_rejected)
+    export_evaluation_sample_files(eval_sample_records)
+    ground_truth_eval = compute_ground_truth_metrics(eval_sample_records)
+
     report_payload: dict[str, Any] = {
         "generated_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
-        "phase": "Phase 1: Real Data Validation",
+        "phase": "Phase 1.5: Evaluation Integrity & Commercial Validation",
         "summary": {
             "boards_configured": len(boards_cfg),
             "boards_scanned": sum(1 for b in board_results if b.error_message is None),
@@ -141,30 +167,21 @@ def run_validation(
             "valid_signals_count": len(all_valid),
             "unique_valid_signals_count": unique_valid_count,
             "regional_duplicates_count": regional_dup_count,
-            "rejected_false_positives_count": len(all_rejected),
-            "false_positive_rate_pct": fp_rate,
+            "heuristic_workflow_clusters_count": len(heuristic_clusters),
+            "heuristic_rejected_candidates_count": len(all_rejected),
+            "heuristic_rejection_rate_pct": heuristic_rejection_rate,
             "valid_by_category": valid_by_cat,
             "valid_by_subtype": valid_by_subtype,
+            "heuristic_pain_tier_breakdown": heuristic_pain_tiers,
             "rejected_by_reason": rejected_by_reason,
-            "labeled_evaluation": {
-                "task_level_operational_precision_pct": 93.4,
-                "strict_automation_pain_precision_on_all_61_pct": 32.8,
-                "strict_automation_pain_precision_on_28_dedup_workflows_pct": 57.1,
-                "routine_job_responsibility_rate_on_all_61_pct": 60.7,
-                "remaining_false_positive_rate_on_all_61_pct": 6.6,
-                "external_buying_or_outsourcing_intent_pct": 0.0,
-                "estimated_unstructured_recall_pct": "60-70% (Estimated; misses implicit manual workflows not using target terms)",
-            },
+            "ground_truth_evaluation": ground_truth_eval,
         },
         "recommendation": {
-            "verdict": "IMPROVE",
+            "verdict": "PIVOT_SEGMENT_BEFORE_BUILDING",
             "summary": (
-                "Signal extraction works deterministically and filters out >94% of keyword noise, "
-                "proving technical feasibility. However, commercially we recommend IMPROVE before scaling to 20+ boards: "
-                "(1) High-growth tech companies often hire internal AI/Ops builders to automate workflows in-house rather than buying external tools, "
-                "so we should shift the target board list toward mid-market, less technical organizations; "
-                "(2) Deduplicate multi-region job postings by default; and "
-                "(3) Score Direct Manual Execution roles separately from Internal Automation Mandate roles."
+                "Technical extraction is fast and free, but heuristic signal counts do not equal commercial demand. "
+                "Wait for independent human labeling on the 50-row evaluation sample and validate whether small "
+                "automation agencies will pay for mid-market operational workflow briefs before building Phase 2."
             ),
         },
         "boards": [b.to_dict() for b in board_results],
@@ -189,10 +206,12 @@ def run_validation(
 if __name__ == "__main__":
     result = run_validation()
     s = result["summary"]
-    print(f"Phase 1 Validation Complete at {result['generated_at']}")
+    print(f"Phase 1.5 Validation Complete at {result['generated_at']}")
     print(f"  Boards scanned: {s['boards_scanned']}/{s['boards_configured']} (API errors: {s['api_errors_count']})")
     print(f"  Total jobs scanned: {s['total_jobs_scanned']}")
     print(f"  Candidate statements evaluated: {s['total_candidates_evaluated']}")
-    print(f"  Valid workflow signals: {s['valid_signals_count']} ({s['unique_valid_signals_count']} unique)")
-    print(f"  Rejected false positives: {s['rejected_false_positives_count']} ({s['false_positive_rate_pct']}%)")
+    print(f"  Heuristic accepted signals: {s['valid_signals_count']} ({s['unique_valid_signals_count']} unique strings, {s['heuristic_workflow_clusters_count']} heuristic clusters)")
+    print(f"  Heuristic rejected candidates: {s['heuristic_rejected_candidates_count']} ({s['heuristic_rejection_rate_pct']}% heuristic filter rejection rate)")
+    print(f"  Ground-truth human evaluation status: {s['ground_truth_evaluation']['status']}")
     print(f"  Recommendation: {result['recommendation']['verdict']}")
+

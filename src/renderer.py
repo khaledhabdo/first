@@ -21,6 +21,20 @@ def render_phase1_html_report(report_data: dict[str, Any]) -> str:
     category_counts = summary["valid_by_category"]
     subtype_counts = summary["valid_by_subtype"]
 
+    heuristic_rejected_count = summary.get(
+        "heuristic_rejected_candidates_count",
+        summary.get("rejected_false_positives_count", 0),
+    )
+    heuristic_rejection_rate = summary.get(
+        "heuristic_rejection_rate_pct",
+        summary.get("false_positive_rate_pct", 0.0),
+    )
+    heuristic_clusters_count = summary.get("heuristic_workflow_clusters_count", "N/A")
+    ground_truth_eval = summary.get(
+        "ground_truth_evaluation",
+        {"status": "PENDING_INDEPENDENT_HUMAN_LABELS", "human_labeled_count": 0},
+    )
+
     board_rows_html = []
     for b in boards:
         status_badge = (
@@ -263,24 +277,24 @@ def render_phase1_html_report(report_data: dict[str, Any]) -> str:
             <div class="muted">Broad keyword hits across 5 categories</div>
         </div>
         <div class="card">
-            <div class="metric-label">Valid Workflow Signals</div>
+            <div class="metric-label">Heuristic-Accepted Signals</div>
             <div class="metric-value" style="color: #166534;">{summary["valid_signals_count"]}</div>
-            <div class="muted">{summary["unique_valid_signals_count"]} unique ({summary["regional_duplicates_count"]} regional duplicates)</div>
+            <div class="muted">{summary["unique_valid_signals_count"]} unique strings ({heuristic_clusters_count} heuristic groupings)</div>
         </div>
         <div class="card">
-            <div class="metric-label">Rejected False Positives</div>
-            <div class="metric-value" style="color: #991b1b;">{summary["rejected_false_positives_count"]:,}</div>
-            <div class="muted">{summary["false_positive_rate_pct"]}% of raw keyword matches rejected</div>
+            <div class="metric-label">Heuristic-Rejected Candidates</div>
+            <div class="metric-value" style="color: #991b1b;">{heuristic_rejected_count:,}</div>
+            <div class="muted">{heuristic_rejection_rate}% heuristic filter rejection rate (unverified without ground truth)</div>
         </div>
         <div class="card">
-            <div class="metric-label">Phase 1 Recommendation</div>
-            <div class="metric-value" style="color: #b45309;">{html.escape(report_data["recommendation"]["verdict"])}</div>
-            <div class="muted">Refine target persona &amp; filters before Phase 2</div>
+            <div class="metric-label">Recommendation</div>
+            <div class="metric-value" style="color: #b45309; font-size: 1.25rem;">{html.escape(report_data["recommendation"]["verdict"])}</div>
+            <div class="muted">Ground Truth: {html.escape(str(ground_truth_eval.get("status", "PENDING")))}</div>
         </div>
     </div>
 
     <div class="section">
-        <h2>1. Board-by-Board Validation Summary (Measured Figures)</h2>
+        <h2>1. Board-by-Board Validation Summary (Measured API &amp; Heuristic Counts)</h2>
         <table>
             <thead>
                 <tr>
@@ -288,8 +302,8 @@ def render_phase1_html_report(report_data: dict[str, Any]) -> str:
                     <th>API Status</th>
                     <th>Jobs Scanned</th>
                     <th>Candidate Sentences</th>
-                    <th>Valid Workflow Signals</th>
-                    <th>Rejected False Positives</th>
+                    <th>Heuristic-Accepted Signals</th>
+                    <th>Heuristic-Rejected Candidates</th>
                 </tr>
             </thead>
             <tbody>
@@ -299,25 +313,25 @@ def render_phase1_html_report(report_data: dict[str, Any]) -> str:
     </div>
 
     <div class="section">
-        <h2>2. Signal Breakdown: Skills vs. Manual Work vs. Buying Intent</h2>
+        <h2>2. Heuristic Signal Breakdown: Skills vs. Manual Work vs. Buying Intent</h2>
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px;">
             <div>
-                <h3>Valid Signals by Workflow Category ({summary["valid_signals_count"]} total)</h3>
+                <h3>Heuristic-Accepted Signals by Category ({summary["valid_signals_count"]} total)</h3>
                 <ul>{category_summary_items}</ul>
                 <p class="muted">
-                    <strong>Direct Manual Execution:</strong> {subtype_counts.get("DIRECT_MANUAL_EXECUTION", 0)} signals<br/>
-                    <strong>Internal Automation Mandate:</strong> {subtype_counts.get("INTERNAL_AUTOMATION_MANDATE", 0)} signals
+                    <strong>Direct Manual Execution (Heuristic):</strong> {subtype_counts.get("DIRECT_MANUAL_EXECUTION", 0)} signals<br/>
+                    <strong>Internal Automation Mandate (Heuristic):</strong> {subtype_counts.get("INTERNAL_AUTOMATION_MANDATE", 0)} signals
                 </p>
             </div>
             <div>
-                <h3>Rejected False Positives by Automated Rule ({summary["rejected_false_positives_count"]:,} total)</h3>
+                <h3>Heuristic-Rejected Candidates by Rule ({heuristic_rejected_count:,} total)</h3>
                 <ul>{reason_summary_items}</ul>
             </div>
         </div>
     </div>
 
     <div class="section">
-        <h2>3. All Validated Manual Workflow Signals ({len(valid_signals)} Real Matches)</h2>
+        <h2>3. All Heuristic-Accepted Manual Workflow Signals ({len(valid_signals)} Real Matches)</h2>
         <div class="controls">
             <label for="catFilter"><strong>Filter by Category:</strong></label>
             <select id="catFilter" onchange="filterValidSignals()">
@@ -354,11 +368,11 @@ def render_phase1_html_report(report_data: dict[str, Any]) -> str:
     </div>
 
     <div class="section">
-        <h2>4. Rejected Matches &amp; False-Positive Audit Log (Showing {len(rejected_samples)} Representative Real Rejections across All {summary["rejected_false_positives_count"]:,} Filtered Statements)</h2>
+        <h2>4. Heuristic-Rejected Candidates Audit Log (Showing {len(rejected_samples)} Representative Real Rejections across All {heuristic_rejected_count:,} Filtered Statements)</h2>
         <p class="muted">
-            Naive keyword matching on job descriptions produces <strong>{summary["false_positive_rate_pct"]}% noise</strong>.
-            Below are real rejected statements demonstrating how ManualOps Radar separates general software skills,
-            English idioms ("excel in"), product marketing copy, and software engineering roles from genuine manual workflows.
+            Deterministic rules filtered out <strong>{heuristic_rejection_rate}%</strong> of broad keyword hits (heuristic filter rejection rate, not a ground-truth false-positive rate).
+            Below are real rejected statements demonstrating how heuristic rules separate general software skills,
+            English idioms ("excel in"), product marketing copy, and software engineering roles from candidate workflow statements.
         </p>
         <div class="controls">
             <label for="rejFilter"><strong>Filter by Rejection Reason:</strong></label>
@@ -391,11 +405,11 @@ def render_phase1_html_report(report_data: dict[str, Any]) -> str:
     </div>
 
     <div class="section">
-        <h2>5. Documented Labeled Evaluation, Limitations &amp; Commercial Recommendation</h2>
+        <h2>5. Evaluation Integrity, Heuristic Groupings &amp; Commercial Recommendation</h2>
         <ul>
-            <li><strong>Documented Labeled Evaluation (Replacing Unverified Estimates):</strong> Across all {summary["valid_signals_count"]} accepted signals (collapsing into <strong>28 unique Company/Workflow clusters</strong>), a documented manual audit shows: <strong>93.4% (57/61) Task-Level Operational Precision</strong>, but only <strong>32.8% (20/61) Strict Commercial Automation-Pain Precision</strong> (or <strong>57.1% [16/28]</strong> at the deduplicated Company/Workflow level), because <strong>60.7% (37/61)</strong> are <em>Routine Job Responsibilities</em> (e.g., BDRs logging their own sales calls in Salesforce or routine monthly GAAP close) and <strong>6.6% (4/61)</strong> are <em>Remaining False Positives</em>. Furthermore, in a 25-statement manual audit of rejected candidates, <strong>76.0% (19/25)</strong> were confirmed True Negatives while <strong>24.0% (6/25)</strong> were Missed Valid Signals (False Negatives). Verified external software or outsourcing buying intent is <strong>0.0% (0/61)</strong>.</li>
-            <li><strong>High Tech-Maturity Bias in Sample:</strong> Stripe, Cloudflare, GitLab, Datadog, and Gusto are large cloud-native technology companies. In their job descriptions, {subtype_counts.get("INTERNAL_AUTOMATION_MANDATE", 0)} of the {summary["valid_signals_count"]} valid signals explicitly mention using <em>in-house AI/ERP automation</em> to eliminate manual work. Mid-market non-tech companies on Greenhouse may exhibit higher direct manual execution and lower internal AI build capacity.</li>
-            <li><strong>Multi-Region &amp; Multi-Role Duplicate Postings:</strong> Global companies publish identical job descriptions across multiple regions ({summary["regional_duplicates_count"]} verbatim regional duplicates, and 33 role/region variants that collapse into <strong>28 unique Company/Workflow clusters</strong>).</li>
+            <li><strong>Separation of Heuristic Classifications vs. Human Ground-Truth Labels:</strong> All counts above ({summary["total_jobs_scanned"]:,} jobs scanned, {summary["total_candidates_evaluated"]:,} candidate statements, {summary["valid_signals_count"]} heuristic-accepted signals, {heuristic_rejected_count:,} heuristic-rejected candidates) are <strong>automated heuristic outputs</strong>. Independent human ground-truth evaluation status is <code>{html.escape(str(ground_truth_eval.get("status")))}</code> ({ground_truth_eval.get("human_labeled_count", 0)} of {ground_truth_eval.get("total_sample_size", 50)} sampled records independently labeled in <code>data/phase1_5_evaluation_worksheet.csv</code>).</li>
+            <li><strong>Heuristic Rejection Rate &ne; Ground-Truth False-Positive Rate:</strong> The <strong>{heuristic_rejection_rate}%</strong> heuristic rejection rate measures the share of broad keyword matches filtered out by deterministic rules; true precision and false-negative rates require completing independent human labeling per <code>docs/LABELING_GUIDELINES.md</code>.</li>
+            <li><strong>Heuristic Company/Workflow Groupings:</strong> Automated keyword clustering groups the {summary["valid_signals_count"]} accepted signals into <strong>{heuristic_clusters_count} heuristic company/workflow groupings</strong>. These are text-similarity approximations, not verified distinct internal business processes.</li>
             <li><strong>Recommendation — {html.escape(report_data["recommendation"]["verdict"])}:</strong> {html.escape(report_data["recommendation"]["summary"])}</li>
         </ul>
     </div>
