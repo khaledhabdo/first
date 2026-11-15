@@ -1,0 +1,26 @@
+{
+  "jobs": [
+    {
+      "id": 90001,
+      "title": "Revenue Operations Coordinator",
+      "company_name": "Acme Logistics (Synthetic)",
+      "absolute_url": "https://example.com/jobs/90001",
+      "first_published": "2026-11-01T09:00:00Z",
+      "updated_at": "2026-11-10T14:30:00Z",
+      "location": { "name": "Remote - US" },
+      "departments": [{ "name": "Finance & Operations" }],
+      "content": "&lt;ul&gt;&lt;li&gt;Perform manual data entry to enter carrier adjustments into NetSuite daily.&lt;/li&gt;&lt;li&gt;Prepare and own weekly balance sheet reconciliations across vendor invoices.&lt;/li&gt;&lt;li&gt;Proficiency in Excel and Google Sheets is a plus.&lt;/li&gt;&lt;li&gt;You excel in a fast-paced environment.&lt;/li&gt;&lt;/ul&gt;"
+    },
+    {
+      "id": 90002,
+      "title": "Account Executive",
+      "company_name": "Acme Logistics (Synthetic)",
+      "absolute_url": "javascript:alert(1)",
+      "first_published": "2026-11-02T09:00:00Z",
+      "updated_at": "2026-11-11T14:30:00Z",
+      "location": { "name": "Chicago, IL" },
+      "departments": [{ "name": "Sales" }],
+      "content": "&lt;p&gt;Update Salesforce with detailed call notes and keep pipeline current.&lt;/p&gt;"
+    }
+  ]
+}

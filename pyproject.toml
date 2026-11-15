@@ -1,0 +1,43 @@
+[build-system]
+requires = ["setuptools>=68.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "manualops-radar"
+version = "0.1.0"
+description = "Deterministic, zero-dependency engine for detecting and auditing manual workflow signals from public Greenhouse job boards."
+readme = "README.md"
+requires-python = ">=3.11"
+license = { file = "LICENSE" }
+authors = [
+  { name = "khaledhabdo" }
+]
+keywords = [
+  "workflow-automation",
+  "greenhouse-api",
+  "deterministic-nlp",
+  "evaluation-integrity",
+  "operations-research",
+]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Intended Audience :: Developers",
+  "Intended Audience :: Information Technology",
+  "License :: OSI Approved :: Apache Software License",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Topic :: Office/Business",
+  "Topic :: Text Processing :: Linguistic",
+]
+dependencies = []
+
+[project.urls]
+Homepage = "https://github.com/khaledhabdo/manualops-radar"
+Repository = "https://github.com/khaledhabdo/manualops-radar"
+Issues = "https://github.com/khaledhabdo/manualops-radar/issues"
+Changelog = "https://github.com/khaledhabdo/manualops-radar/blob/main/CHANGELOG.md"
+
+[tool.setuptools.packages.find]
+include = ["src*"]
