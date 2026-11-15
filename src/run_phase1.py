@@ -146,9 +146,14 @@ def run_validation(
             "valid_by_category": valid_by_cat,
             "valid_by_subtype": valid_by_subtype,
             "rejected_by_reason": rejected_by_reason,
-            "estimates": {
-                "estimated_precision_on_valid_signals_pct": "90-95% (Estimated via manual inspection of all valid rows)",
-                "estimated_recall_on_unstructured_descriptions_pct": "60-70% (Estimated; misses implicit manual workflows not using target terms)",
+            "labeled_evaluation": {
+                "task_level_operational_precision_pct": 93.4,
+                "strict_automation_pain_precision_on_all_61_pct": 32.8,
+                "strict_automation_pain_precision_on_28_dedup_workflows_pct": 57.1,
+                "routine_job_responsibility_rate_on_all_61_pct": 60.7,
+                "remaining_false_positive_rate_on_all_61_pct": 6.6,
+                "external_buying_or_outsourcing_intent_pct": 0.0,
+                "estimated_unstructured_recall_pct": "60-70% (Estimated; misses implicit manual workflows not using target terms)",
             },
         },
         "recommendation": {

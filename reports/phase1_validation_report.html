@@ -113,7 +113,7 @@
     <header>
         <h1>ManualOps Radar — Phase 1: Real Data Validation Report</h1>
         <div class="muted">
-            Generated at: <strong>2026-11-15T04:25:12Z</strong> |
+            Generated at: <strong>2026-11-15T04:40:40Z</strong> |
             Source: Official Greenhouse Public Job Board API (5 Verified Companies)
         </div>
         <div class="banner-warning">
@@ -3178,11 +3178,11 @@
     </div>
 
     <div class="section">
-        <h2>5. Limitations, Estimates &amp; Commercial Recommendation</h2>
+        <h2>5. Documented Labeled Evaluation, Limitations &amp; Commercial Recommendation</h2>
         <ul>
-            <li><strong>Measured vs. Estimated Figures:</strong> All counts above (1,974 jobs scanned, 864 candidate statements, 61 valid signals, 803 rejected matches, 0 API errors) are <strong>100% exact measured figures</strong> from live Greenhouse API responses on 2026-11-15. An <em>estimated</em> manual review precision of our filtered valid signals is <strong>~90–95% (Estimated)</strong> based on human inspection of all 61 valid rows, while recall against subtle/implicit manual processes phrased without our target keywords is <strong>~60–70% (Estimated)</strong>.</li>
+            <li><strong>Documented Labeled Evaluation (Replacing Unverified Estimates):</strong> Across all 61 accepted signals (collapsing into <strong>28 unique Company/Workflow clusters</strong>), a documented manual audit shows: <strong>93.4% (57/61) Task-Level Operational Precision</strong>, but only <strong>32.8% (20/61) Strict Commercial Automation-Pain Precision</strong> (or <strong>57.1% [16/28]</strong> at the deduplicated Company/Workflow level), because <strong>60.7% (37/61)</strong> are <em>Routine Job Responsibilities</em> (e.g., BDRs logging their own sales calls in Salesforce or routine monthly GAAP close) and <strong>6.6% (4/61)</strong> are <em>Remaining False Positives</em>. Furthermore, in a 25-statement manual audit of rejected candidates, <strong>76.0% (19/25)</strong> were confirmed True Negatives while <strong>24.0% (6/25)</strong> were Missed Valid Signals (False Negatives). Verified external software or outsourcing buying intent is <strong>0.0% (0/61)</strong>.</li>
             <li><strong>High Tech-Maturity Bias in Sample:</strong> Stripe, Cloudflare, GitLab, Datadog, and Gusto are large cloud-native technology companies. In their job descriptions, 9 of the 61 valid signals explicitly mention using <em>in-house AI/ERP automation</em> to eliminate manual work. Mid-market non-tech companies on Greenhouse may exhibit higher direct manual execution and lower internal AI build capacity.</li>
-            <li><strong>Multi-Region Duplicate Postings:</strong> Global companies publish identical job descriptions across multiple regions (10 of 61 valid signals are regional duplicates, leaving 51 unique workflow signals).</li>
+            <li><strong>Multi-Region &amp; Multi-Role Duplicate Postings:</strong> Global companies publish identical job descriptions across multiple regions (10 verbatim regional duplicates, and 33 role/region variants that collapse into <strong>28 unique Company/Workflow clusters</strong>).</li>
             <li><strong>Recommendation — IMPROVE:</strong> Signal extraction works deterministically and filters out &gt;94% of keyword noise, proving technical feasibility. However, commercially we recommend IMPROVE before scaling to 20+ boards: (1) High-growth tech companies often hire internal AI/Ops builders to automate workflows in-house rather than buying external tools, so we should shift the target board list toward mid-market, less technical organizations; (2) Deduplicate multi-region job postings by default; and (3) Score Direct Manual Execution roles separately from Internal Automation Mandate roles.</li>
         </ul>
     </div>
